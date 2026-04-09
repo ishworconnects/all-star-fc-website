@@ -9,6 +9,7 @@
   const headerRoot = document.querySelector("[data-site-header]");
   const footerRoot = document.querySelector("[data-site-footer]");
   const sponsorFallback = "assets/images/sponsor-placeholder.svg";
+  const tournamentFallback = "assets/images/tournament-placeholder.svg";
   const navItems = [
     { key: "home", label: "Home", href: "index.html" },
     { key: "about", label: "About", href: "about.html" },
@@ -50,22 +51,14 @@
   }
 
   function renderFooter() {
-    const contactSummary = [];
-    if (content.contact.email) {
-      contactSummary.push(`<a href="mailto:${content.contact.email}">${content.contact.email}</a>`);
-    }
-    if (content.contact.phone) {
-      contactSummary.push(`<a href="tel:${content.contact.phone.replace(/\s+/g, "")}">${content.contact.phone}</a>`);
-    }
-
     footerRoot.innerHTML = `
       <section class="footer-cta">
         <div class="section-shell footer-cta-shell">
           <div>
-            <p class="eyebrow">Build the next chapter</p>
-            <h2>Join a club culture built on standards, growth, and community.</h2>
+            <p class="eyebrow">All Star FC Helsinki</p>
+            <h2>Built on Nepalese values. Driven by football excellence.</h2>
           </div>
-          <a class="button button-light" href="contact.html">Contact the Club</a>
+          <a class="button button-light" href="contact.html">Join / Contact</a>
         </div>
       </section>
       <div class="site-footer-inner section-shell">
@@ -78,10 +71,12 @@
         </div>
         <div class="footer-meta">
           <p>${content.contact.addressLines.join(", ")}</p>
-          <p>${contactSummary.length ? contactSummary.join(" | ") : content.contact.officeHours}</p>
+          <p><a href="mailto:${content.contact.email}">${content.contact.email}</a></p>
         </div>
         <div class="social-list">
-          ${content.clubMeta.socialLinks.map((social) => `<a href="${social.href}" target="_blank" rel="noreferrer">${social.label}</a>`).join("")}
+          ${content.clubMeta.socialLinks.map((social) => `
+            <a href="${social.href}" target="_blank" rel="noreferrer">${social.label}</a>
+          `).join("")}
         </div>
       </div>
     `;
@@ -102,9 +97,6 @@
     const tierClass = sponsor.tier
       ? `tier-${sponsor.tier.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`
       : "";
-    const linkMarkup = sponsor.link
-      ? `<a class="text-link" href="${sponsor.link}" target="_blank" rel="noreferrer">Sponsor link</a>`
-      : `<span class="sponsor-note">Proud club partner</span>`;
     return `
       <article class="sponsor-card ${tierClass}">
         <div class="sponsor-logo-shell">
@@ -112,14 +104,13 @@
         </div>
         <p class="eyebrow">${sponsor.tier}</p>
         <h3>${sponsor.name}</h3>
-        ${linkMarkup}
       </article>
     `;
   }
 
   function galleryCard(item) {
     return `
-      <article class="gallery-card" data-gallery-card data-category="${item.category}">
+      <article class="gallery-card" data-gallery-card data-category="${item.category}" data-lightbox-src="${item.image}" data-lightbox-caption="${item.title}">
         <img src="${item.image}" alt="${item.title}">
         <div class="gallery-copy">
           <div class="card-topline">
@@ -127,6 +118,23 @@
           </div>
           <h3>${item.title}</h3>
           <p>${item.caption}</p>
+        </div>
+      </article>
+    `;
+  }
+
+  function futureTournamentCard(slot) {
+    const image = slot.image || tournamentFallback;
+    return `
+      <article class="future-tournament-card" data-future-gallery-card data-lightbox-src="${image}" data-lightbox-caption="${slot.name}">
+        <div class="future-cover">
+          <img src="${image}" alt="${slot.name}">
+          <span class="media-status">${slot.status}</span>
+        </div>
+        <div class="future-copy">
+          <p class="eyebrow">${slot.date}</p>
+          <h3>${slot.name}</h3>
+          <p>${slot.description}</p>
         </div>
       </article>
     `;
@@ -142,6 +150,120 @@
         <h3>${member.name}</h3>
       </article>
     `;
+  }
+
+  function tickerMarkup(upcoming) {
+    const labels = upcoming.map((fixture) => `${fixture.opponent} | ${fixture.date}`);
+    const repeated = labels.concat(labels);
+    return repeated.map((label) => `<span class="ticker-item">${label}</span>`).join("");
+  }
+  function setupRevealAnimations() {
+    const revealTargets = root.querySelectorAll(
+      ".content-section .info-card, .content-section .team-card, .content-section .program-card, .content-section .table-card, .content-section .gallery-card, .content-section .future-tournament-card, .content-section .sponsor-card, .content-section .emphasis-card"
+    );
+
+    if (!revealTargets.length) {
+      return;
+    }
+
+    revealTargets.forEach((target, index) => {
+      target.classList.add("reveal");
+      target.style.setProperty("--reveal-delay", `${Math.min(index * 40, 260)}ms`);
+    });
+
+    if (!("IntersectionObserver" in window)) {
+      revealTargets.forEach((target) => target.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries, currentObserver) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          currentObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.16, rootMargin: "0px 0px -40px 0px" });
+
+    revealTargets.forEach((target) => observer.observe(target));
+  }
+
+  function setupGalleryFilters() {
+    const filterRoot = root.querySelector("[data-gallery-filters]");
+    if (!filterRoot) {
+      return;
+    }
+
+    const filterButtons = Array.from(filterRoot.querySelectorAll("[data-gallery-filter]"));
+    const cards = Array.from(root.querySelectorAll("[data-gallery-card]"));
+
+    function applyFilter(category) {
+      filterButtons.forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.galleryFilter === category);
+      });
+
+      cards.forEach((card) => {
+        const isVisible = category === "All" || card.dataset.category === category;
+        card.classList.toggle("is-hidden", !isVisible);
+      });
+    }
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        applyFilter(button.dataset.galleryFilter || "All");
+      });
+    });
+
+    applyFilter("All");
+  }
+
+  function setupGalleryLightbox() {
+    const lightbox = root.querySelector("[data-lightbox]");
+    if (!lightbox) {
+      return;
+    }
+
+    const lightboxImage = lightbox.querySelector("[data-lightbox-image]");
+    const lightboxCaption = lightbox.querySelector("[data-lightbox-caption]");
+    const closeButton = lightbox.querySelector("[data-lightbox-close]");
+    const clickableCards = root.querySelectorAll("[data-gallery-card], [data-future-gallery-card]");
+
+    function closeLightbox() {
+      lightbox.hidden = true;
+      document.body.classList.remove("lightbox-open");
+    }
+
+    function openLightbox(source, caption) {
+      if (!source) {
+        return;
+      }
+      lightboxImage.src = source;
+      lightboxImage.alt = caption || "All Star FC gallery image";
+      lightboxCaption.textContent = caption || "";
+      lightbox.hidden = false;
+      document.body.classList.add("lightbox-open");
+    }
+
+    clickableCards.forEach((card) => {
+      card.addEventListener("click", () => {
+        const src = card.dataset.lightboxSrc;
+        const caption = card.dataset.lightboxCaption;
+        openLightbox(src, caption);
+      });
+    });
+
+    closeButton.addEventListener("click", closeLightbox);
+    lightbox.addEventListener("click", (event) => {
+      if (event.target === lightbox) {
+        closeLightbox();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !lightbox.hidden) {
+        closeLightbox();
+      }
+    });
   }
 
   function setupContactForm() {
@@ -217,6 +339,10 @@
         }
 
         form.reset();
+        const defaultSubject = form.querySelector("input[name='subject']");
+        if (defaultSubject) {
+          defaultSubject.checked = true;
+        }
         setStatus(content.contact.form.successMessage, "success");
       } catch (error) {
         const fallbackSubject = encodeURIComponent(`All Star FC: ${subject}`);
@@ -231,15 +357,16 @@
       }
     });
   }
-
   function renderHome() {
-    const upcomingTournaments = content.fixtures.upcoming.slice(0, 5);
-    const honourWinners = content.honours.filter((honour) => honour.result === "Winner");
+    const upcoming = content.fixtures.upcoming.slice(0, 5);
+    const honourWins = content.honours.filter((honour) => honour.result === "Winner").length;
+    const futurePreview = (content.futureTournamentGallery || []).slice(0, 3);
+
     root.innerHTML = `
       <section class="hero-section">
         <div class="section-shell hero-grid">
           <div class="hero-copy">
-            <p class="eyebrow">All Star FC | Helsinki</p>
+            <p class="eyebrow">All Star FC | Helsinki Since ${content.clubMeta.founded}</p>
             <h1>${content.hero.title}</h1>
             <p class="hero-text">${content.hero.subtitle}</p>
             <div class="button-row">
@@ -255,18 +382,31 @@
               `).join("")}
             </div>
           </div>
-          <div class="hero-panel">
+          <article class="hero-panel">
             <img class="hero-photo" src="${content.hero.image}" alt="${content.hero.imageAlt}">
             <div class="hero-panel-content">
-              <p class="eyebrow">Upcoming tournaments</p>
-              <h2>All Star FC tournament calendar</h2>
-              <p>Key upcoming competitions for 2026 and beyond.</p>
+              <p class="eyebrow">Tournament pulse</p>
+              <h2>All Star FC 2026 Competition Window</h2>
               <ul class="feature-list">
-                ${upcomingTournaments.map((tournament) => `
-                  <li><strong>${tournament.opponent}</strong><span>${tournament.date}</span></li>
+                ${upcoming.map((fixture) => `
+                  <li>
+                    <strong>${fixture.opponent}</strong>
+                    <span>${fixture.date}</span>
+                  </li>
                 `).join("")}
               </ul>
-              <a class="text-link" href="fixtures.html">See full tournament page</a>
+              <a class="text-link" href="fixtures.html">View full tournament schedule</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="ticker-section">
+        <div class="section-shell">
+          <div class="ticker-shell">
+            <span class="ticker-label">Tournament pulse</span>
+            <div class="ticker-track">
+              ${tickerMarkup(upcoming)}
             </div>
           </div>
         </div>
@@ -274,94 +414,76 @@
 
       <section class="content-section">
         <div class="section-shell">
-          ${sectionHeading("About", "Club Profile", content.about.intro)}
+          ${sectionHeading("Club profile", "Progressive football with Nepalese values at the core.", content.about.intro)}
           <div class="split-layout">
             <div class="rich-copy">
               ${content.about.story.map((paragraph) => `<p>${paragraph}</p>`).join("")}
               <p><strong>Vision:</strong> ${content.about.vision}</p>
               <p><strong>Mission:</strong> ${content.about.mission}</p>
             </div>
-            <article class="info-card emphasis-card">
-              <h3>Core values</h3>
-              <div class="values-strip-inner">
-                ${content.clubMeta.values.map((value) => `<span>${value}</span>`).join("")}
-              </div>
-              <p class="meta-line">Founded in ${content.clubMeta.founded} and built on Nepalese community pride in Helsinki.</p>
-            </article>
+            <div class="stack-grid">
+              ${content.about.pillars.map((pillar) => `
+                <article class="info-card">
+                  <h3>${pillar.title}</h3>
+                  <p>${pillar.body}</p>
+                </article>
+              `).join("")}
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="content-section">
-        <div class="section-shell">
-          ${sectionHeading("Latest News", "Upcoming Tournaments", "All Star FC is participating in the following tournaments.")}
-          <div class="table-card">
-            <table>
-              <caption class="sr-only">Upcoming tournament schedule</caption>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Tournament</th>
-                  <th>Status</th>
-                  <th>Venue</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${upcomingTournaments.map((fixture) => `
+      <section class="content-section tint-section">
+        <div class="section-shell split-layout">
+          <div>
+            ${sectionHeading("Next match windows", "Upcoming tournaments and competition status.", "Simple high-trust scheduling for players, families, and supporters.")}
+            <div class="table-card">
+              <table>
+                <caption class="sr-only">Upcoming tournaments</caption>
+                <thead>
                   <tr>
-                    <td>${fixture.date}</td>
-                    <td>${fixture.opponent}</td>
-                    <td>${fixture.competition}</td>
-                    <td>${fixture.venue}</td>
+                    <th>Date</th>
+                    <th>Tournament</th>
+                    <th>Status</th>
+                    <th>Venue</th>
                   </tr>
-                `).join("")}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  ${upcoming.map((fixture) => `
+                    <tr>
+                      <td>${fixture.date}</td>
+                      <td>${fixture.opponent}</td>
+                      <td>${fixture.competition}</td>
+                      <td>${fixture.venue}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
           </div>
+          <article class="info-card emphasis-card">
+            <p class="eyebrow">Honours snapshot</p>
+            <h3>${honourWins} tournament wins recorded</h3>
+            <p>All Star FC continues to represent culture, community, and unity with disciplined football standards.</p>
+            <div class="values-strip-inner">
+              ${content.clubMeta.values.map((value) => `<span>${value}</span>`).join("")}
+            </div>
+          </article>
         </div>
       </section>
 
       <section class="content-section">
         <div class="section-shell">
-          ${sectionHeading("Explore", "Quick Club Access", "Simple links to the most-used sections.")}
-          <div class="card-grid three-up quick-link-grid">
-            <article class="info-card quick-link-card">
-              <h3>Teams & Academy</h3>
-              <p>U8-U13 development and senior integration pathway.</p>
-              <a class="button button-secondary" href="teams.html">View Teams</a>
-            </article>
-            <article class="info-card quick-link-card">
-              <h3>Gallery</h3>
-              <p>Winning moments, academy milestones, and sponsor updates.</p>
-              <a class="button button-secondary" href="gallery.html">View Gallery</a>
-            </article>
-            <article class="info-card quick-link-card">
-              <h3>Contact / Join</h3>
-              <p>Reach All Star FC directly through the dynamic enquiry form.</p>
-              <a class="button button-secondary" href="contact.html">Contact Club</a>
-            </article>
+          ${sectionHeading("Future tournament media vault", "A dedicated gallery system ready for upcoming cup photos.", "Each tournament now has a prepared visual block so you can keep building the club archive season by season.")}
+          <div class="card-grid three-up future-grid">
+            ${futurePreview.map((slot) => futureTournamentCard(slot)).join("")}
           </div>
-        </div>
-      </section>
-
-      <section class="content-section">
-        <div class="section-shell card-grid two-up">
-          <article class="info-card">
-            <p class="eyebrow">Honours Snapshot</p>
-            <h3>${honourWinners.length} tournament wins recorded</h3>
-            <p>All Star FC continues to represent Nepalese values through disciplined and competitive football.</p>
-          </article>
-          <article class="info-card">
-            <p class="eyebrow">Club Focus</p>
-            <h3>One senior representative team with a clear U8-U13 pathway.</h3>
-            <p>Simple structure, long-term player development, and strong club identity.</p>
-          </article>
         </div>
       </section>
 
       <section class="content-section tint-section" id="executive-panel">
         <div class="section-shell">
-          ${sectionHeading("Executive Committee", "Leadership panel for All Star FC.", "")}
+          ${sectionHeading("Executive committee", "Leadership panel for All Star FC.", "")}
           <div class="card-grid two-up exec-grid">
             ${content.board.map((member, index) => boardCard(member, index)).join("")}
           </div>
@@ -370,7 +492,7 @@
 
       <section class="content-section sponsors-section">
         <div class="section-shell">
-          ${sectionHeading("Sponsors", "The businesses currently backing All Star FC.", "")}
+          ${sectionHeading("Sponsors", "Partners currently backing All Star FC.", "")}
           <div class="card-grid sponsors-grid">
             ${content.sponsors.map((sponsor) => sponsorCard(sponsor)).join("")}
           </div>
@@ -378,13 +500,12 @@
       </section>
     `;
   }
-
   function renderAbout() {
     root.innerHTML = `
       <section class="page-hero">
         <div class="section-shell">
           <p class="eyebrow">About the club</p>
-          <h1>Representing Nepalese community pride through football in Helsinki.</h1>
+          <h1>A Nepalese football club in Helsinki with a long-term development mindset.</h1>
           <p>${content.about.story[0]}</p>
         </div>
       </section>
@@ -392,7 +513,7 @@
       <section class="content-section">
         <div class="section-shell split-layout">
           <div>
-            ${sectionHeading("Club profile", "All Star FC is a progressive and community-focused club in Helsinki.", content.about.intro)}
+            ${sectionHeading("Club story", "Built on community, discipline, and football ambition.", content.about.intro)}
           </div>
           <div class="rich-copy">
             ${content.about.story.map((paragraph) => `<p>${paragraph}</p>`).join("")}
@@ -404,18 +525,9 @@
 
       <section class="content-section tint-section">
         <div class="section-shell">
-          ${sectionHeading("Core values", "The standards behind every team and session.", "")}
+          ${sectionHeading("Core values", "Values used as practical standards across all teams.", "")}
           <div class="values-strip-inner">
             ${content.clubMeta.values.map((value) => `<span>${value}</span>`).join("")}
-          </div>
-        </div>
-      </section>
-
-      <section class="content-section" id="executive-panel">
-        <div class="section-shell">
-          ${sectionHeading("Executive committee", "Leadership structure for All Star FC.", "")}
-          <div class="card-grid two-up exec-grid">
-            ${content.board.map((member, index) => boardCard(member, index)).join("")}
           </div>
         </div>
       </section>
@@ -446,22 +558,30 @@
           </div>
         </div>
       </section>
+
+      <section class="content-section tint-section" id="executive-panel">
+        <div class="section-shell">
+          ${sectionHeading("Executive committee", "Leadership structure guiding All Star FC operations.", "")}
+          <div class="card-grid two-up exec-grid">
+            ${content.board.map((member, index) => boardCard(member, index)).join("")}
+          </div>
+        </div>
+      </section>
     `;
   }
-
   function renderTeams() {
     root.innerHTML = `
       <section class="page-hero">
         <div class="section-shell">
           <p class="eyebrow">Teams and academy</p>
-          <h1>Player pathways that connect development, competition, and community.</h1>
-          <p>Every team shares one club identity, with age-appropriate coaching and clear behavioral expectations from first session to matchday.</p>
+          <h1>One pathway from U8-U13 academy to senior team integration.</h1>
+          <p>All teams operate with clear identity, training discipline, and values-based representation.</p>
         </div>
       </section>
 
       <section class="content-section">
         <div class="section-shell">
-          ${sectionHeading("Teams", "From community entry point to senior competition.", "This structure gives the club a flexible but coherent pathway for new players and long-term development.")}
+          ${sectionHeading("Team structure", "From academy development to representative senior football.", "")}
           <div class="card-grid two-up">
             ${content.teams.map((team) => `
               <article class="team-card">
@@ -482,44 +602,54 @@
       </section>
 
       <section class="content-section tint-section">
-        <div class="section-shell">
-          ${sectionHeading("Academy programs", "Coaching blocks for every stage of the journey.", "Program descriptions can be swapped for your exact curriculum, session count, and seasonal pathway details.")}
-          <div class="card-grid three-up">
-            ${content.academyPrograms.map((program) => `
-              <article class="program-card">
-                <span class="pill">${program.ages}</span>
-                <h3>${program.name}</h3>
-                <p>${program.summary}</p>
-                <p class="meta-line">${program.emphasis}</p>
-              </article>
-            `).join("")}
+        <div class="section-shell split-layout">
+          <div>
+            ${sectionHeading("Academy program", "Focused U8-U13 foundation with clear progression.", content.academyPrograms[0].summary)}
+            <article class="info-card emphasis-card">
+              <p class="eyebrow">${content.academyPrograms[0].ages}</p>
+              <h3>${content.academyPrograms[0].name}</h3>
+              <p>${content.academyPrograms[0].emphasis}</p>
+            </article>
           </div>
+          <article class="program-card">
+            <p class="eyebrow">Pathway model</p>
+            <h3>Academy to senior transition</h3>
+            <p>After the U8-U13 stage, players move into structured assessment and integration blocks aligned with senior standards.</p>
+            <div class="values-strip-inner">
+              <span>Technical growth</span>
+              <span>Discipline</span>
+              <span>Match readiness</span>
+              <span>Team integration</span>
+            </div>
+          </article>
         </div>
       </section>
     `;
   }
 
   function renderFixtures() {
+    const futureSlots = content.futureTournamentGallery || [];
+
     root.innerHTML = `
       <section class="page-hero">
         <div class="section-shell">
           <p class="eyebrow">Upcoming tournaments</p>
-          <h1>Follow the next tournaments All Star FC is participating in.</h1>
-          <p>Schedules are maintained through the shared content file for fast updates.</p>
+          <h1>Competition schedule and future tournament media planning.</h1>
+          <p>All Star FC is participating in the tournaments listed below, with a dedicated media archive prepared for each event.</p>
         </div>
       </section>
 
       <section class="content-section">
-        <div class="section-shell table-section">
+        <div class="section-shell">
           ${sectionHeading("Tournament schedule", "Upcoming cups and key dates.", "")}
           <div class="table-card">
             <table>
-              <caption class="sr-only">Upcoming fixtures</caption>
+              <caption class="sr-only">Upcoming tournament schedule</caption>
               <thead>
                 <tr>
                   <th>Date</th>
-                  <th>Opponent</th>
-                  <th>Competition</th>
+                  <th>Tournament</th>
+                  <th>Status</th>
                   <th>Kick-off</th>
                   <th>Venue</th>
                 </tr>
@@ -539,41 +669,76 @@
           </div>
         </div>
       </section>
+
+      <section class="content-section tint-section">
+        <div class="section-shell">
+          ${sectionHeading("Future tournament media vault", "Prepared gallery slots for every major competition.", "Once each tournament is played, photos can be added quickly without redesigning the site.")}
+          <div class="card-grid three-up future-grid">
+            ${futureSlots.map((slot) => futureTournamentCard(slot)).join("")}
+          </div>
+          <p class="section-note">Tip: upload tournament photos with consistent names and replace the placeholder slots from the shared content file.</p>
+        </div>
+      </section>
     `;
   }
-
   function renderGallery() {
+    const categories = ["All"].concat(Array.from(new Set(content.galleryItems.map((item) => item.category))));
+    const futureSlots = content.futureTournamentGallery || [];
+
     root.innerHTML = `
       <section class="page-hero">
         <div class="section-shell">
           <p class="eyebrow">Club gallery</p>
-          <h1>Winning, community, and academy moments.</h1>
-          <p>A simple and clear gallery featuring selected real All Star FC highlights.</p>
+          <h1>Visual archive with current highlights and future tournament media slots.</h1>
+          <p>Click any card to open a large view. Filter current gallery by category.</p>
         </div>
       </section>
 
       <section class="content-section">
         <div class="section-shell">
-          ${sectionHeading("Visual story", "Selected moments from All Star FC.", "These images highlight academy wins, sponsorship announcements, and first-team winning moments.")}
+          ${sectionHeading("Current highlights", "Real moments from academy, community, and matchday.", "")}
+          <div class="filter-row" data-gallery-filters>
+            ${categories.map((category, index) => `
+              <button class="filter-chip ${index === 0 ? "is-active" : ""}" type="button" data-gallery-filter="${category}">
+                ${category}
+              </button>
+            `).join("")}
+          </div>
           <div class="gallery-grid" data-gallery-grid>
             ${content.galleryItems.map((item) => galleryCard(item)).join("")}
           </div>
         </div>
       </section>
+
+      <section class="content-section tint-section">
+        <div class="section-shell">
+          ${sectionHeading("Future tournament media vault", "Reserved blocks for upcoming tournament photography.", "Prepared now so your 2026+ visual archive can grow fast and stay consistent.")}
+          <div class="card-grid three-up future-grid">
+            ${futureSlots.map((slot) => futureTournamentCard(slot)).join("")}
+          </div>
+        </div>
+      </section>
+
+      <div class="lightbox" data-lightbox hidden>
+        <button class="lightbox-close" type="button" data-lightbox-close aria-label="Close image">Close</button>
+        <figure class="lightbox-figure">
+          <img data-lightbox-image src="" alt="">
+          <figcaption data-lightbox-caption></figcaption>
+        </figure>
+      </div>
     `;
   }
 
   function renderContact() {
     const publicChannels = [];
-    if (content.contact.email) {
-      publicChannels.push(`
-        <article class="info-card">
-          <h2>Email</h2>
-          <p><a href="mailto:${content.contact.email}">${content.contact.email}</a></p>
-          <p>${content.contact.officeHours}</p>
-        </article>
-      `);
-    }
+    publicChannels.push(`
+      <article class="info-card">
+        <h2>Email</h2>
+        <p><a href="mailto:${content.contact.email}">${content.contact.email}</a></p>
+        <p>${content.contact.officeHours}</p>
+      </article>
+    `);
+
     if (content.contact.phone) {
       publicChannels.push(`
         <article class="info-card">
@@ -582,6 +747,7 @@
         </article>
       `);
     }
+
     if (content.contact.whatsapp) {
       publicChannels.push(`
         <article class="info-card">
@@ -590,11 +756,12 @@
         </article>
       `);
     }
+
     publicChannels.push(`
       <article class="info-card">
         <h2>Location</h2>
         <p>${content.contact.addressLines.join("<br>")}</p>
-        <p><a href="${content.contact.mapLink}" target="_blank" rel="noreferrer">Open the map</a></p>
+        <p><a href="${content.contact.mapLink}" target="_blank" rel="noreferrer">Open map</a></p>
       </article>
     `);
 
@@ -602,8 +769,8 @@
       <section class="page-hero">
         <div class="section-shell">
           <p class="eyebrow">Contact and join</p>
-          <h1>Start the conversation with the club.</h1>
-          <p>Players, parents, coaches, and sponsors can reach All Star FC directly here.</p>
+          <h1>Reach All Star FC directly from one dynamic contact panel.</h1>
+          <p>For player pathways, academy interest, and sponsorship, use the form below.</p>
         </div>
       </section>
 
@@ -613,10 +780,10 @@
         </div>
       </section>
 
-      <section class="content-section">
+      <section class="content-section tint-section">
         <div class="section-shell split-layout">
           <div>
-            ${sectionHeading("Contact form", "Send a direct enquiry to All Star FC.", "")}
+            ${sectionHeading("Dynamic enquiry form", "Send a message directly to All Star FC.", "")}
             <form class="contact-form-card" data-contact-form novalidate>
               <div class="form-grid two-col">
                 <label class="form-field">
@@ -660,15 +827,24 @@
             </form>
           </div>
           <article class="info-card emphasis-card">
-            <h3>Fastest response</h3>
-            <p>Email us at <a href="mailto:${content.contact.email}">${content.contact.email}</a> and include age group or enquiry type in the subject line.</p>
-            <p>${content.contact.officeHours}</p>
+            <p class="eyebrow">Response flow</p>
+            <h3>Fastest way to hear back</h3>
+            <p>Use a clear subject and include age group or purpose in your message.</p>
+            <p><a class="text-link" href="mailto:${content.contact.email}">${content.contact.email}</a></p>
           </article>
         </div>
       </section>
     `;
 
     setupContactForm();
+  }
+
+  function setupInteractions() {
+    setupRevealAnimations();
+    if (page === "gallery") {
+      setupGalleryFilters();
+      setupGalleryLightbox();
+    }
   }
 
   renderHeader();
@@ -684,4 +860,5 @@
   };
 
   (pageRenderers[page] || renderHome)();
+  setupInteractions();
 })();

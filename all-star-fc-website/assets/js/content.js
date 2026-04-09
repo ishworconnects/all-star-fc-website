@@ -119,6 +119,43 @@ window.clubContent = {
       { date: "Upcoming", opponent: "Manoj Aryal Memorial Cup", competition: "Participating Tournament", venue: "TBC", kickOff: "TBC" }
     ]
   },
+  futureTournamentGallery: [
+    {
+      name: "Manse Nepal Cup",
+      date: "23 May 2026",
+      status: "Media Slot Open",
+      description: "Upload matchday captures, team lineups, and celebration moments after the cup.",
+      image: "assets/images/gallery-winning-team.jpg"
+    },
+    {
+      name: "Himalayan Cup",
+      date: "13 Jun 2026",
+      status: "Media Slot Open",
+      description: "Reserve this gallery block for tournament progress and final-day highlights.",
+      image: "assets/images/gallery-community-support.jpg"
+    },
+    {
+      name: "Gurka Cup 2026",
+      date: "Upcoming",
+      status: "Waiting for Photos",
+      description: "Future tournament photography space prepared for All Star FC updates.",
+      image: ""
+    },
+    {
+      name: "Gaule Cup",
+      date: "Upcoming",
+      status: "Waiting for Photos",
+      description: "Add squad, match action, and trophy-stage visuals once the event is complete.",
+      image: ""
+    },
+    {
+      name: "Manoj Aryal Memorial Cup",
+      date: "Upcoming",
+      status: "Waiting for Photos",
+      description: "Dedicated archive card for upcoming memorial cup participation moments.",
+      image: ""
+    }
+  ],
   honours: [
     { year: "2012", competition: "Akhanda Nepal Cup, Helsinki", result: "Winner" },
     { year: "2014", competition: "NRN Charity Cup, Helsinki", result: "Winner" },
