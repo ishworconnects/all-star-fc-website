@@ -192,6 +192,12 @@ window.clubContent = {
       category: "Matchday",
       caption: "All Star FC senior squad celebrating a proud Gurkha Cup 2018 moment.",
       image: "assets/images/gurkha-cup-2018.jpg"
+    },
+    {
+      title: "Gaule Cup 2021 Winning Moment",
+      category: "Matchday",
+      caption: "All Star FC squad with trophies during a memorable Gaule Cup 2021 campaign.",
+      image: "assets/images/gaule-cup-2021.jpg"
     }
   ],
   sponsors: [
