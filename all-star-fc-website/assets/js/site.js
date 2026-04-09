@@ -54,7 +54,6 @@
             <img src="${content.clubMeta.badge}" alt="${content.clubMeta.shortName} badge">
             <div class="brand-meta">
               <strong>${content.clubMeta.shortName}</strong>
-              <span>${content.clubMeta.city}</span>
             </div>
           </a>
           <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
