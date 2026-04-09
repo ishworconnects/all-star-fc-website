@@ -26,6 +26,38 @@
     { label: "Fixtures", href: "fixtures.html" }
   ];
 
+  function socialIcon(label) {
+    const key = String(label || "").toLowerCase();
+    if (key.includes("instagram")) {
+      return `
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"></rect>
+          <circle cx="12" cy="12" r="4.1" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+          <circle cx="17.4" cy="6.6" r="1.2" fill="currentColor"></circle>
+        </svg>
+      `;
+    }
+    if (key.includes("facebook")) {
+      return `
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M13.4 8.2h2.4V5h-2.8c-3 0-4.8 1.8-4.8 4.9v2H6v3.2h2.2V20h3.5v-4.9h2.7l.5-3.2h-3.2v-1.6c0-1.1.4-2.1 1.7-2.1z"></path>
+        </svg>
+      `;
+    }
+    if (key.includes("youtube")) {
+      return `
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M20.9 7.3c-.2-1-.9-1.7-1.9-1.9C17.4 5 12 5 12 5s-5.4 0-7 .4c-1 .2-1.7.9-1.9 1.9C2.7 8.9 2.7 12 2.7 12s0 3.1.4 4.7c.2 1 .9 1.7 1.9 1.9 1.6.4 7 .4 7 .4s5.4 0 7-.4c1-.2 1.7-.9 1.9-1.9.4-1.6.4-4.7.4-4.7s0-3.1-.4-4.7zM10.4 15.2V8.8l5.3 3.2-5.3 3.2z"></path>
+        </svg>
+      `;
+    }
+    return `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="12" r="9"></circle>
+      </svg>
+    `;
+  }
+
   function renderHeader() {
     headerRoot.innerHTML = `
       <div class="site-border"></div>
@@ -36,10 +68,12 @@
               <a class="${index === 0 ? "utility-home-link" : ""}" href="${item.href}">${item.label}</a>
             `).join("")}
           </div>
-          <div class="utility-links utility-right">
-            <a href="mailto:${content.contact.email}">Email</a>
-            ${content.clubMeta.socialLinks.slice(0, 2).map((social) => `
-              <a href="${social.href}" target="_blank" rel="noreferrer">${social.label}</a>
+          <div class="utility-links utility-right utility-socials" aria-label="Club social links">
+            ${content.clubMeta.socialLinks.map((social) => `
+              <a class="social-logo-link" href="${social.href}" target="_blank" rel="noreferrer" aria-label="${social.label}">
+                ${socialIcon(social.label)}
+                <span class="sr-only">${social.label}</span>
+              </a>
             `).join("")}
           </div>
         </div>
@@ -135,13 +169,17 @@
     const tierClass = sponsor.tier
       ? `tier-${sponsor.tier.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`
       : "";
+    const linkStart = sponsor.link ? `<a class="sponsor-card-link" href="${sponsor.link}" target="_blank" rel="noreferrer" aria-label="Visit ${sponsor.name}">` : "";
+    const linkEnd = sponsor.link ? "</a>" : "";
     return `
       <article class="sponsor-card ${tierClass}">
-        <div class="sponsor-logo-shell">
-          <img src="${logo}" alt="${sponsor.name}">
-        </div>
-        <p class="eyebrow">${sponsor.tier}</p>
-        <h3>${sponsor.name}</h3>
+        ${linkStart}
+          <div class="sponsor-logo-shell">
+            <img src="${logo}" alt="${sponsor.name}">
+          </div>
+          <p class="eyebrow">${sponsor.tier}</p>
+          <h3>${sponsor.name}</h3>
+        ${linkEnd}
       </article>
     `;
   }

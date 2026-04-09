@@ -225,9 +225,9 @@ window.clubContent = {
     }
   ],
   sponsors: [
-    { name: "Mount Everest Ravintola", tier: "Main Sponsor", link: "", logo: "assets/images/sponsor-mount-everest.png" },
-    { name: "Ravintola Nepal Palace", tier: "Secondary Sponsor", link: "", logo: "assets/images/sponsor-nepal-palace.png" },
-    { name: "Ravintola Annapurna", tier: "Secondary Sponsor", link: "", logo: "assets/images/sponsor-annapurna.png" }
+    { name: "Mount Everest Ravintola", tier: "Main Sponsor", link: "https://dev.everestnokka.fi/en/home/", logo: "assets/images/sponsor-mount-everest.png" },
+    { name: "Ravintola Nepal Palace", tier: "Secondary Sponsor", link: "https://nepalpalace.fi/en/frontpage/", logo: "assets/images/sponsor-nepal-palace.png" },
+    { name: "Ravintola Annapurna", tier: "Secondary Sponsor", link: "https://www.annapurna.fi/", logo: "assets/images/sponsor-annapurna.png" }
   ],
   contact: {
     email: "allstarfc.helsinki@gmail.com",

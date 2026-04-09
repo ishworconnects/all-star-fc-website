@@ -1750,10 +1750,20 @@ body.lightbox-open {
 .footer-brand img {
   width: 54px;
   height: 54px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.16);
-  padding: 0.2rem;
+}
+
+.brand img {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.footer-brand img {
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  padding: 0;
 }
 
 .brand-meta {
@@ -1938,6 +1948,37 @@ body.lightbox-open {
   height: 100%;
 }
 
+.social-logo-link {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(241, 255, 247, 0.45);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: rgba(5, 28, 18, 0.3);
+  color: #effff6;
+}
+
+.social-logo-link svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.social-logo-link:hover {
+  background: rgba(241, 255, 247, 0.95);
+  border-color: rgba(241, 255, 247, 0.95);
+  color: #0f3a25;
+}
+
+.sponsor-card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
 @media (max-width: 1200px) {
   .site-nav a {
     font-size: 0.72rem;
@@ -1977,6 +2018,16 @@ body.lightbox-open {
   .footer-brand img {
     width: 48px;
     height: 48px;
+  }
+
+  .social-logo-link {
+    width: 30px;
+    height: 30px;
+  }
+
+  .social-logo-link svg {
+    width: 15px;
+    height: 15px;
   }
 
   .brand-meta {
@@ -2044,6 +2095,16 @@ body.lightbox-open {
   .footer-brand img {
     width: 42px;
     height: 42px;
+  }
+
+  .social-logo-link {
+    width: 28px;
+    height: 28px;
+  }
+
+  .social-logo-link svg {
+    width: 14px;
+    height: 14px;
   }
 
   .hero-copy h1 {
