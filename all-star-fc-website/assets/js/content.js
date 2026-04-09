@@ -188,10 +188,10 @@ window.clubContent = {
       image: "assets/images/gallery-community-support.jpg"
     },
     {
-      title: "Winning Moment",
+      title: "Gurkha Cup 2018 Winning Moment",
       category: "Matchday",
-      caption: "Senior team trophies, squad portrait energy, and winning team spirit represented in one proud club moment.",
-      image: "assets/images/gallery-winning-team.jpg"
+      caption: "All Star FC senior squad celebrating a proud Gurkha Cup 2018 moment.",
+      image: "assets/images/gurkha-cup-2018.jpg"
     }
   ],
   sponsors: [
