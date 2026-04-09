@@ -690,39 +690,25 @@
     `;
   }
   function renderGallery() {
-    const categories = ["All"].concat(Array.from(new Set(content.galleryItems.map((item) => item.category))));
-    const futureSlots = content.futureTournamentGallery || [];
+    const manseGallery = (content.galleryItems || []).filter((item) =>
+      /manse nepal cup/i.test(item.title) || /manse nepal cup/i.test(item.category)
+    );
+    const galleryItems = manseGallery.length ? manseGallery : (content.galleryItems || []);
 
     root.innerHTML = `
       <section class="page-hero">
         <div class="section-shell">
-          <p class="eyebrow">Club gallery</p>
-          <h1>Visual archive with current highlights and future tournament media slots.</h1>
-          <p>Click any card to open a large view. Filter current gallery by category.</p>
+          <p class="eyebrow">Tournament gallery</p>
+          <h1>Manse Nepal Cup 2024 Winning Moments</h1>
+          <p>Only official Manse Nepal Cup photos are shown in this gallery. Click any photo to open a larger view.</p>
         </div>
       </section>
 
       <section class="content-section">
         <div class="section-shell">
-          ${sectionHeading("Current highlights", "Real moments from academy, community, and matchday.", "")}
-          <div class="filter-row" data-gallery-filters>
-            ${categories.map((category, index) => `
-              <button class="filter-chip ${index === 0 ? "is-active" : ""}" type="button" data-gallery-filter="${category}">
-                ${category}
-              </button>
-            `).join("")}
-          </div>
+          ${sectionHeading("Cup archive", "All Star FC | Manse Nepal Cup 2024", "")}
           <div class="gallery-grid" data-gallery-grid>
-            ${content.galleryItems.map((item) => galleryCard(item)).join("")}
-          </div>
-        </div>
-      </section>
-
-      <section class="content-section tint-section">
-        <div class="section-shell">
-          ${sectionHeading("Future tournament media vault", "Reserved blocks for upcoming tournament photography.", "Prepared now so your 2026+ visual archive can grow fast and stay consistent.")}
-          <div class="card-grid three-up future-grid">
-            ${futureSlots.map((slot) => futureTournamentCard(slot)).join("")}
+            ${galleryItems.map((item) => galleryCard(item)).join("")}
           </div>
         </div>
       </section>

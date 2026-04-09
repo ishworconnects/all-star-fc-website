@@ -177,68 +177,38 @@ window.clubContent = {
   ],
   galleryItems: [
     {
-      title: "NRNA Childrens Football Winning Moments",
-      category: "Academy",
-      caption: "Young All Star FC players celebrating medals, certificates, and winning moments from NRNA childrens football events.",
-      image: "assets/images/gallery-academy-awards.jpg"
-    },
-    {
-      title: "Sponsorship Announcement",
-      category: "Community",
-      caption: "All Star FC community members and families during a club sponsorship announcement moment.",
-      image: "assets/images/gallery-community-support.jpg"
-    },
-    {
-      title: "Gurkha Cup 2018 Winning Moment",
-      category: "Matchday",
-      caption: "All Star FC senior squad celebrating a proud Gurkha Cup 2018 moment.",
-      image: "assets/images/gurkha-cup-2018.jpg"
-    },
-    {
-      title: "Gaule Cup 2021 Winning Moment",
-      category: "Matchday",
-      caption: "All Star FC squad with trophies during a memorable Gaule Cup 2021 campaign.",
-      image: "assets/images/gaule-cup-2021.jpg"
-    },
-    {
-      title: "Himalayan Cup 2025 Squad (Runner-up)",
-      category: "Matchday",
-      caption: "All Star FC squad photo from Himalayan Cup 2025, where the club finished runner-up.",
-      image: "assets/images/himalayan-cup-2025-squad.jpg"
-    },
-    {
       title: "Manse Nepal Cup 2024 Winning Squad",
-      category: "Matchday",
+      category: "Manse Nepal Cup 2024",
       caption: "All Star FC squad before the decisive winning moments at Manse Nepal Cup 2024.",
       image: "assets/images/manse-nepal-cup-2024-1.jpg"
     },
     {
       title: "Manse Nepal Cup 2024 Celebration",
-      category: "Matchday",
+      category: "Manse Nepal Cup 2024",
       caption: "Winning celebration as All Star FC lifted the atmosphere after the Manse Nepal Cup 2024 result.",
       image: "assets/images/manse-nepal-cup-2024-2.jpg"
     },
     {
       title: "Manse Nepal Cup 2024 Medal Ceremony",
-      category: "Matchday",
+      category: "Manse Nepal Cup 2024",
       caption: "All Star FC players with medals and trophy during the Manse Nepal Cup 2024 ceremony.",
       image: "assets/images/manse-nepal-cup-2024-3.jpg"
     },
     {
       title: "Manse Nepal Cup 2024 Team and Supporters",
-      category: "Matchday",
+      category: "Manse Nepal Cup 2024",
       caption: "Winning moment featuring players and supporters celebrating together after the cup victory.",
       image: "assets/images/manse-nepal-cup-2024-4.jpg"
     },
     {
       title: "Manse Nepal Cup 2024 Club Family Moment",
-      category: "Matchday",
+      category: "Manse Nepal Cup 2024",
       caption: "All Star FC players, families, and supporters sharing the cup-winning celebration.",
       image: "assets/images/manse-nepal-cup-2024-5.jpg"
     },
     {
       title: "Manse Nepal Cup 2024 Trophy Portrait",
-      category: "Matchday",
+      category: "Manse Nepal Cup 2024",
       caption: "Representative trophy portrait from All Star FC's Manse Nepal Cup 2024 winning day.",
       image: "assets/images/manse-nepal-cup-2024-6.jpg"
     }
