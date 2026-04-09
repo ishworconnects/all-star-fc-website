@@ -165,19 +165,43 @@
 
   function futureTournamentCard(slot) {
     const image = slot.image || tournamentFallback;
+    const folderSlug = slot.slug || "";
+    const folderHref = folderSlug ? `gallery.html?folder=${encodeURIComponent(folderSlug)}` : "gallery.html";
     return `
-      <article class="future-tournament-card" data-future-gallery-card data-lightbox-src="${image}" data-lightbox-caption="${slot.name}" tabindex="0" role="button" aria-label="Open ${slot.name}">
-        <div class="future-cover">
-          <img src="${image}" alt="${slot.name}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/images/tournament-placeholder.svg'">
-          <span class="media-status">${slot.status}</span>
-        </div>
-        <div class="future-copy">
-          <p class="eyebrow">${slot.date}</p>
-          <h3>${slot.name}</h3>
-          <p>${slot.description}</p>
-        </div>
+      <article class="future-tournament-card">
+        <a class="future-card-link" href="${folderHref}" aria-label="Open ${slot.name} folder">
+          <div class="future-cover">
+            <img src="${image}" alt="${slot.name}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/images/tournament-placeholder.svg'">
+            <span class="media-status">${slot.status}</span>
+          </div>
+          <div class="future-copy">
+            <p class="eyebrow">${slot.date}</p>
+            <h3>${slot.name}</h3>
+            <p>${slot.description}</p>
+          </div>
+        </a>
       </article>
     `;
+  }
+
+  function inferFolderSlug(value) {
+    const raw = String(value || "").toLowerCase();
+    if (raw.includes("manse")) {
+      return "manse-nepal-cup";
+    }
+    if (raw.includes("himalayan")) {
+      return "himalayan-cup";
+    }
+    if (raw.includes("gurka") || raw.includes("gurkha")) {
+      return "gurka-cup-2026";
+    }
+    if (raw.includes("gaule")) {
+      return "gaule-cup";
+    }
+    if (raw.includes("manoj")) {
+      return "manoj-aryal-memorial-cup";
+    }
+    return "";
   }
 
   function boardCard(member, index) {
@@ -255,6 +279,72 @@
     });
 
     applyFilter("All");
+  }
+
+  function setupGalleryFolders() {
+    const folderButtons = Array.from(root.querySelectorAll("[data-gallery-folder]"));
+    const galleryGrid = root.querySelector("[data-gallery-grid]");
+    const folderTitle = root.querySelector("[data-folder-title]");
+    const folderNote = root.querySelector("[data-folder-note]");
+    if (!folderButtons.length || !galleryGrid || !folderTitle || !folderNote) {
+      return;
+    }
+
+    const folderMeta = (content.futureTournamentGallery || []).map((slot) => ({
+      slug: slot.slug || inferFolderSlug(slot.name),
+      name: slot.name,
+      description: slot.description
+    }));
+
+    const photosByFolder = (content.galleryItems || []).map((item) => ({
+      ...item,
+      folder: item.folder || inferFolderSlug(item.category || item.title)
+    }));
+
+    function renderFolder(folderSlug, updateUrl = true) {
+      const selectedFolder = folderMeta.find((folder) => folder.slug === folderSlug) || folderMeta[0];
+      if (!selectedFolder) {
+        return;
+      }
+
+      folderButtons.forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.galleryFolder === selectedFolder.slug);
+      });
+
+      const folderPhotos = photosByFolder.filter((item) => item.folder === selectedFolder.slug);
+      folderTitle.textContent = `All Star FC | ${selectedFolder.name}`;
+      folderNote.textContent = folderPhotos.length
+        ? `Showing ${folderPhotos.length} photo${folderPhotos.length > 1 ? "s" : ""} from ${selectedFolder.name}.`
+        : `No photos uploaded yet for ${selectedFolder.name}.`;
+
+      galleryGrid.innerHTML = folderPhotos.length
+        ? folderPhotos.map((item) => galleryCard(item)).join("")
+        : `
+          <article class="info-card gallery-empty-card">
+            <h3>${selectedFolder.name}</h3>
+            <p>Folder created. Upload photos for this tournament and they will appear here automatically.</p>
+          </article>
+        `;
+
+      if (updateUrl) {
+        const nextUrl = new URL(window.location.href);
+        nextUrl.searchParams.set("folder", selectedFolder.slug);
+        window.history.replaceState({}, "", `${nextUrl.pathname}${nextUrl.search}`);
+      }
+    }
+
+    folderButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        renderFolder(button.dataset.galleryFolder || "", true);
+      });
+    });
+
+    const folderFromQuery = new URLSearchParams(window.location.search).get("folder");
+    const hasQueryFolder = folderFromQuery && folderMeta.some((folder) => folder.slug === folderFromQuery);
+    const defaultFolder = hasQueryFolder
+      ? folderFromQuery
+      : (folderMeta.find((folder) => photosByFolder.some((photo) => photo.folder === folder.slug)) || folderMeta[0])?.slug;
+    renderFolder(defaultFolder || "", false);
   }
 
   function setupGalleryLightbox() {
@@ -730,26 +820,47 @@
     `;
   }
   function renderGallery() {
-    const manseGallery = (content.galleryItems || []).filter((item) =>
-      /manse nepal cup/i.test(item.title) || /manse nepal cup/i.test(item.category)
-    );
-    const galleryItems = manseGallery.length ? manseGallery : (content.galleryItems || []);
+    const folders = (content.futureTournamentGallery || []).map((slot) => ({
+      slug: slot.slug || inferFolderSlug(slot.name),
+      name: slot.name,
+      image: slot.image || tournamentFallback,
+      status: slot.status
+    }));
 
     root.innerHTML = `
       <section class="page-hero">
         <div class="section-shell">
           <p class="eyebrow">Tournament gallery</p>
-          <h1>Manse Nepal Cup 2024 Winning Moments</h1>
-          <p>Only official Manse Nepal Cup photos are shown here. Open any card for the full image in a clean view.</p>
+          <h1>Tournament folders and visual archive</h1>
+          <p>Select a tournament folder. Photos appear only after clicking the folder name.</p>
         </div>
       </section>
 
       <section class="content-section">
         <div class="section-shell">
-          ${sectionHeading("Cup archive", "All Star FC | Manse Nepal Cup 2024", "")}
-          <div class="gallery-grid manse-grid" data-gallery-grid>
-            ${galleryItems.map((item) => galleryCard(item)).join("")}
+          ${sectionHeading("Tournament folders", "Click Manse Nepal folder to open Manse photos.", "")}
+          <div class="folder-grid">
+            ${folders.map((folder) => `
+              <button class="folder-card" type="button" data-gallery-folder="${folder.slug}" aria-label="Open ${folder.name} folder">
+                <img src="${folder.image}" alt="${folder.name}">
+                <div class="folder-card-body">
+                  <p class="folder-card-name">${folder.name}</p>
+                  <p class="folder-card-status">${folder.status}</p>
+                </div>
+              </button>
+            `).join("")}
           </div>
+        </div>
+      </section>
+
+      <section class="content-section tint-section">
+        <div class="section-shell">
+          <div class="section-heading">
+            <p class="eyebrow">Cup archive</p>
+            <h2 data-folder-title>All Star FC | Tournament Folder</h2>
+            <p data-folder-note>Select a folder to view photos.</p>
+          </div>
+          <div class="gallery-grid manse-grid" data-gallery-grid></div>
         </div>
       </section>
     `;
@@ -869,6 +980,7 @@
     setupRevealAnimations();
     if (page === "gallery") {
       setupGalleryFilters();
+      setupGalleryFolders();
     }
   }
 
