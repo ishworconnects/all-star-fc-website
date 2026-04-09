@@ -172,6 +172,7 @@ window.clubContent = {
     { year: "2023", competition: "FC Gaule Cup, Helsinki", result: "Runner-up" },
     { year: "2023", competition: "Manse Nepal Khukuri Cup, Tampere", result: "Runner-up" },
     { year: "2024", competition: "Manse Nepal Khukuri Cup, Tampere", result: "Winner" },
+    { year: "2025", competition: "Himalayan Cup", result: "Runner-up" },
     { year: "2025", competition: "Gurkha Cup", result: "Winner" }
   ],
   galleryItems: [
@@ -198,6 +199,12 @@ window.clubContent = {
       category: "Matchday",
       caption: "All Star FC squad with trophies during a memorable Gaule Cup 2021 campaign.",
       image: "assets/images/gaule-cup-2021.jpg"
+    },
+    {
+      title: "Himalayan Cup 2025 Squad (Runner-up)",
+      category: "Matchday",
+      caption: "All Star FC squad photo from Himalayan Cup 2025, where the club finished runner-up.",
+      image: "assets/images/himalayan-cup-2025-squad.jpg"
     }
   ],
   sponsors: [
