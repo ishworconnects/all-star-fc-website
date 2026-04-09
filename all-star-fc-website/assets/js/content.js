@@ -125,35 +125,35 @@ window.clubContent = {
       date: "23 May 2026",
       status: "Media Slot Open",
       description: "Upload matchday captures, team lineups, and celebration moments after the cup.",
-      image: "assets/images/gallery-winning-team.jpg"
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-1.jpg"
     },
     {
       name: "Himalayan Cup",
       date: "13 Jun 2026",
       status: "Media Slot Open",
       description: "Reserve this gallery block for tournament progress and final-day highlights.",
-      image: "assets/images/gallery-community-support.jpg"
+      image: "assets/images/tournaments/himalayan-cup/himalayan-cup-cover.jpg"
     },
     {
       name: "Gurka Cup 2026",
       date: "Upcoming",
       status: "Waiting for Photos",
       description: "Future tournament photography space prepared for All Star FC updates.",
-      image: ""
+      image: "assets/images/tournaments/gurka-cup-2026/gurka-cup-2026-cover.jpg"
     },
     {
       name: "Gaule Cup",
       date: "Upcoming",
       status: "Waiting for Photos",
       description: "Add squad, match action, and trophy-stage visuals once the event is complete.",
-      image: ""
+      image: "assets/images/tournaments/gaule-cup/gaule-cup-placeholder.svg"
     },
     {
       name: "Manoj Aryal Memorial Cup",
       date: "Upcoming",
       status: "Waiting for Photos",
       description: "Dedicated archive card for upcoming memorial cup participation moments.",
-      image: ""
+      image: "assets/images/tournaments/manoj-aryal-memorial-cup/manoj-aryal-memorial-cup-placeholder.svg"
     }
   ],
   honours: [
@@ -180,37 +180,37 @@ window.clubContent = {
       title: "Manse Nepal Cup 2024 Winning Squad",
       category: "Manse Nepal Cup 2024",
       caption: "All Star FC squad before the decisive winning moments at Manse Nepal Cup 2024.",
-      image: "assets/images/manse-nepal-cup-2024-1.jpg"
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-1.jpg"
     },
     {
       title: "Manse Nepal Cup 2024 Celebration",
       category: "Manse Nepal Cup 2024",
       caption: "Winning celebration as All Star FC lifted the atmosphere after the Manse Nepal Cup 2024 result.",
-      image: "assets/images/manse-nepal-cup-2024-2.jpg"
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-2.jpg"
     },
     {
       title: "Manse Nepal Cup 2024 Medal Ceremony",
       category: "Manse Nepal Cup 2024",
       caption: "All Star FC players with medals and trophy during the Manse Nepal Cup 2024 ceremony.",
-      image: "assets/images/manse-nepal-cup-2024-3.jpg"
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-3.jpg"
     },
     {
       title: "Manse Nepal Cup 2024 Team and Supporters",
       category: "Manse Nepal Cup 2024",
       caption: "Winning moment featuring players and supporters celebrating together after the cup victory.",
-      image: "assets/images/manse-nepal-cup-2024-4.jpg"
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-4.jpg"
     },
     {
       title: "Manse Nepal Cup 2024 Club Family Moment",
       category: "Manse Nepal Cup 2024",
       caption: "All Star FC players, families, and supporters sharing the cup-winning celebration.",
-      image: "assets/images/manse-nepal-cup-2024-5.jpg"
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-5.jpg"
     },
     {
       title: "Manse Nepal Cup 2024 Trophy Portrait",
       category: "Manse Nepal Cup 2024",
       caption: "Representative trophy portrait from All Star FC's Manse Nepal Cup 2024 winning day.",
-      image: "assets/images/manse-nepal-cup-2024-6.jpg"
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-6.jpg"
     }
   ],
   sponsors: [
