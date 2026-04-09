@@ -166,7 +166,9 @@
   function futureTournamentCard(slot) {
     const image = slot.image || tournamentFallback;
     const folderSlug = slot.slug || "";
-    const folderHref = folderSlug ? `gallery.html?folder=${encodeURIComponent(folderSlug)}` : "gallery.html";
+    const folderHref = folderSlug
+      ? `gallery.html?folder=${encodeURIComponent(folderSlug)}#gallery-folder-view`
+      : "gallery.html#gallery-folder-view";
     return `
       <article class="future-tournament-card">
         <a class="future-card-link" href="${folderHref}" aria-label="Open ${slot.name} folder">
@@ -854,7 +856,7 @@
       </section>
 
       <section class="content-section tint-section">
-        <div class="section-shell">
+        <div class="section-shell" id="gallery-folder-view">
           <div class="section-heading">
             <p class="eyebrow">Cup archive</p>
             <h2 data-folder-title>All Star FC | Tournament Folder</h2>
