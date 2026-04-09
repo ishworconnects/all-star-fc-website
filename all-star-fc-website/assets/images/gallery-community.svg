@@ -1,0 +1,18 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Community placeholder</title>
+  <desc id="desc">Illustrated community event placeholder image.</desc>
+  <defs>
+    <linearGradient id="bg" x1="100" y1="80" x2="1080" y2="760" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f0c56a"/>
+      <stop offset="1" stop-color="#c85a33"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <circle cx="250" cy="260" r="110" fill="#ffffff" opacity="0.18"/>
+  <circle cx="480" cy="320" r="82" fill="#ffffff" opacity="0.18"/>
+  <circle cx="720" cy="260" r="100" fill="#ffffff" opacity="0.18"/>
+  <circle cx="950" cy="330" r="78" fill="#ffffff" opacity="0.18"/>
+  <path d="M120 650C330 560 500 520 650 528C812 536 945 578 1080 650" fill="none" stroke="#ffffff" stroke-width="12" opacity="0.88"/>
+  <text x="80" y="120" font-family="Arial Black, sans-serif" font-size="64" fill="#ffffff">COMMUNITY</text>
+  <text x="80" y="180" font-family="Trebuchet MS, sans-serif" font-size="30" fill="#fff5dd">Families, volunteers, belonging</text>
+</svg>

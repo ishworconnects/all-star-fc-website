@@ -1,0 +1,17 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Training placeholder</title>
+  <desc id="desc">Illustrated training session placeholder image.</desc>
+  <defs>
+    <linearGradient id="sky" x1="150" y1="80" x2="1060" y2="770" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#173b78"/>
+      <stop offset="1" stop-color="#2f8c64"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#sky)"/>
+  <circle cx="955" cy="190" r="90" fill="#e2a633" opacity="0.95"/>
+  <rect y="610" width="1200" height="290" fill="#0d6a3b"/>
+  <path d="M80 710H1120" stroke="#ffffff" stroke-width="8" opacity="0.75"/>
+  <path d="M310 610C420 490 548 448 684 474C796 495 891 568 962 670" fill="none" stroke="#ffffff" stroke-width="10" opacity="0.8"/>
+  <text x="80" y="125" font-family="Arial Black, sans-serif" font-size="64" fill="#ffffff">TRAINING</text>
+  <text x="80" y="185" font-family="Trebuchet MS, sans-serif" font-size="30" fill="#f0e4c6">Tempo, discipline, repetition</text>
+</svg>
