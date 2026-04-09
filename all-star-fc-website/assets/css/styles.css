@@ -1040,6 +1040,36 @@ h3 {
   letter-spacing: 0.08em;
 }
 
+.header-shell {
+  min-height: 96px;
+  padding: 0.9rem 0;
+}
+
+.brand img,
+.footer-brand img {
+  width: 68px;
+  height: 68px;
+}
+
+.brand strong {
+  font-size: clamp(1.5rem, 2vw, 1.9rem);
+  line-height: 1;
+}
+
+.brand span {
+  font-size: 1.02rem;
+}
+
+.site-nav {
+  gap: 0.46rem;
+}
+
+.site-nav a {
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  padding: 0.72rem 1.12rem;
+}
+
 .hero-section {
   position: relative;
   overflow: hidden;
