@@ -26,7 +26,7 @@
       <div class="header-shell section-shell">
         <a class="brand" href="index.html" aria-label="${content.clubMeta.name}">
           <img src="${content.clubMeta.badge}" alt="${content.clubMeta.shortName} badge">
-          <div>
+          <div class="brand-meta">
             <strong>${content.clubMeta.shortName}</strong>
             <span>${content.clubMeta.city}</span>
           </div>
@@ -110,15 +110,17 @@
 
   function galleryCard(item) {
     return `
-      <article class="gallery-card" data-gallery-card data-category="${item.category}" data-lightbox-src="${item.image}" data-lightbox-caption="${item.title}" tabindex="0" role="button" aria-label="Open ${item.title}">
-        <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/images/tournament-placeholder.svg'">
-        <div class="gallery-copy">
-          <div class="card-topline">
-            <span class="pill">${item.category}</span>
+      <article class="gallery-card" data-gallery-card data-category="${item.category}">
+        <a class="gallery-card-link" href="${item.image}" target="_blank" rel="noopener noreferrer" aria-label="Open full photo: ${item.title}">
+          <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/images/tournament-placeholder.svg'">
+          <div class="gallery-copy">
+            <div class="card-topline">
+              <span class="pill">${item.category}</span>
+            </div>
+            <h3>${item.title}</h3>
+            <p>${item.caption}</p>
           </div>
-          <h3>${item.title}</h3>
-          <p>${item.caption}</p>
-        </div>
+        </a>
       </article>
     `;
   }
@@ -700,26 +702,18 @@
         <div class="section-shell">
           <p class="eyebrow">Tournament gallery</p>
           <h1>Manse Nepal Cup 2024 Winning Moments</h1>
-          <p>Only official Manse Nepal Cup photos are shown in this gallery. Click any photo to open a larger view.</p>
+          <p>Only official Manse Nepal Cup photos are shown here. Open any card for the full image in a clean view.</p>
         </div>
       </section>
 
       <section class="content-section">
         <div class="section-shell">
           ${sectionHeading("Cup archive", "All Star FC | Manse Nepal Cup 2024", "")}
-          <div class="gallery-grid" data-gallery-grid>
+          <div class="gallery-grid manse-grid" data-gallery-grid>
             ${galleryItems.map((item) => galleryCard(item)).join("")}
           </div>
         </div>
       </section>
-
-      <div class="lightbox" data-lightbox hidden>
-        <button class="lightbox-close" type="button" data-lightbox-close aria-label="Close image">Close</button>
-        <figure class="lightbox-figure">
-          <img data-lightbox-image src="" alt="">
-          <figcaption data-lightbox-caption></figcaption>
-        </figure>
-      </div>
     `;
   }
 
@@ -837,7 +831,6 @@
     setupRevealAnimations();
     if (page === "gallery") {
       setupGalleryFilters();
-      setupGalleryLightbox();
     }
   }
 
