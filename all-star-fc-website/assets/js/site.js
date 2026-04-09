@@ -110,8 +110,8 @@
 
   function galleryCard(item) {
     return `
-      <article class="gallery-card" data-gallery-card data-category="${item.category}" data-lightbox-src="${item.image}" data-lightbox-caption="${item.title}">
-        <img src="${item.image}" alt="${item.title}">
+      <article class="gallery-card" data-gallery-card data-category="${item.category}" data-lightbox-src="${item.image}" data-lightbox-caption="${item.title}" tabindex="0" role="button" aria-label="Open ${item.title}">
+        <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/images/tournament-placeholder.svg'">
         <div class="gallery-copy">
           <div class="card-topline">
             <span class="pill">${item.category}</span>
@@ -126,9 +126,9 @@
   function futureTournamentCard(slot) {
     const image = slot.image || tournamentFallback;
     return `
-      <article class="future-tournament-card" data-future-gallery-card data-lightbox-src="${image}" data-lightbox-caption="${slot.name}">
+      <article class="future-tournament-card" data-future-gallery-card data-lightbox-src="${image}" data-lightbox-caption="${slot.name}" tabindex="0" role="button" aria-label="Open ${slot.name}">
         <div class="future-cover">
-          <img src="${image}" alt="${slot.name}">
+          <img src="${image}" alt="${slot.name}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/images/tournament-placeholder.svg'">
           <span class="media-status">${slot.status}</span>
         </div>
         <div class="future-copy">
@@ -249,6 +249,14 @@
         const src = card.dataset.lightboxSrc;
         const caption = card.dataset.lightboxCaption;
         openLightbox(src, caption);
+      });
+      card.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          const src = card.dataset.lightboxSrc;
+          const caption = card.dataset.lightboxCaption;
+          openLightbox(src, caption);
+        }
       });
     });
 

@@ -52,6 +52,7 @@ h3 {
 img {
   display: block;
   max-width: 100%;
+  image-orientation: from-image;
 }
 
 a {
@@ -1286,6 +1287,12 @@ h3 {
 .gallery-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 18px 28px rgba(7, 40, 25, 0.16);
+}
+
+.gallery-card:focus-visible,
+.future-tournament-card:focus-visible {
+  outline: 3px solid rgba(49, 160, 104, 0.45);
+  outline-offset: 3px;
 }
 
 .gallery-card.is-hidden {
