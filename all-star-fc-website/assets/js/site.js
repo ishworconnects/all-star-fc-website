@@ -19,34 +19,73 @@
     { key: "gallery", label: "Gallery", href: "gallery.html" },
     { key: "contact", label: "Contact / Join", href: "contact.html" }
   ];
+  const utilityLinks = [
+    { label: "ALLSTARFC.COM", href: "index.html" },
+    { label: "Join Us", href: "contact.html" },
+    { label: "Academy", href: "teams.html" },
+    { label: "Fixtures", href: "fixtures.html" }
+  ];
 
   function renderHeader() {
     headerRoot.innerHTML = `
       <div class="site-border"></div>
-      <div class="header-shell section-shell">
-        <a class="brand" href="index.html" aria-label="${content.clubMeta.name}">
-          <img src="${content.clubMeta.badge}" alt="${content.clubMeta.shortName} badge">
-          <div class="brand-meta">
-            <strong>${content.clubMeta.shortName}</strong>
-            <span>${content.clubMeta.city}</span>
+      <div class="top-utility">
+        <div class="section-shell utility-shell">
+          <div class="utility-links utility-left">
+            ${utilityLinks.map((item, index) => `
+              <a class="${index === 0 ? "utility-home-link" : ""}" href="${item.href}">${item.label}</a>
+            `).join("")}
           </div>
-        </a>
-        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
-          Menu
-        </button>
-        <nav class="site-nav" id="primary-navigation" aria-label="Primary navigation">
-          ${navItems.map((item) => `
-            <a href="${item.href}" ${item.key === page ? 'aria-current="page"' : ""}>${item.label}</a>
-          `).join("")}
-        </nav>
+          <div class="utility-links utility-right">
+            <a href="mailto:${content.contact.email}">Email</a>
+            ${content.clubMeta.socialLinks.slice(0, 2).map((social) => `
+              <a href="${social.href}" target="_blank" rel="noreferrer">${social.label}</a>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+      <div class="masthead-shell section-shell">
+        <div class="masthead-meta">
+          <p class="official-pill">Official All Star FC Website</p>
+          <p class="masthead-note">${content.clubMeta.city} | Founded ${content.clubMeta.founded}</p>
+        </div>
+        <div class="header-shell">
+          <a class="brand" href="index.html" aria-label="${content.clubMeta.name}">
+            <img src="${content.clubMeta.badge}" alt="${content.clubMeta.shortName} badge">
+            <div class="brand-meta">
+              <strong>${content.clubMeta.shortName}</strong>
+              <span>${content.clubMeta.city}</span>
+            </div>
+          </a>
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+            Menu
+          </button>
+          <nav class="site-nav" id="primary-navigation" aria-label="Primary navigation">
+            ${navItems.map((item) => `
+              <a href="${item.href}" ${item.key === page ? 'aria-current="page"' : ""}>${item.label}</a>
+            `).join("")}
+          </nav>
+        </div>
       </div>
     `;
 
     const toggle = headerRoot.querySelector(".nav-toggle");
     const nav = headerRoot.querySelector(".site-nav");
+    const navLinks = headerRoot.querySelectorAll(".site-nav a");
     toggle.addEventListener("click", () => {
       const isOpen = nav.classList.toggle("is-open");
       toggle.setAttribute("aria-expanded", String(isOpen));
+      toggle.textContent = isOpen ? "Close" : "Menu";
+    });
+
+    navLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        if (nav.classList.contains("is-open")) {
+          nav.classList.remove("is-open");
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.textContent = "Menu";
+        }
+      });
     });
   }
 
