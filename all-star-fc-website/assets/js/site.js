@@ -60,6 +60,9 @@
 
   function renderHeader() {
     headerRoot.innerHTML = `
+      <div class="scroll-progress" aria-hidden="true">
+        <span data-scroll-progress-bar></span>
+      </div>
       <div class="site-border"></div>
       <div class="top-utility">
         <div class="section-shell utility-shell">
@@ -151,6 +154,7 @@
           `).join("")}
         </div>
       </div>
+      <button class="back-to-top" type="button" data-back-to-top aria-label="Back to top">Top</button>
     `;
   }
 
@@ -381,6 +385,7 @@
             <p>Folder created. Upload photos for this tournament and they will appear here automatically.</p>
           </article>
         `;
+      setupInteractiveCards(galleryGrid);
 
       if (updateUrl) {
         const nextUrl = new URL(window.location.href);
@@ -401,6 +406,77 @@
       ? folderFromQuery
       : (folderMeta.find((folder) => photosByFolder.some((photo) => photo.folder === folder.slug)) || folderMeta[0])?.slug;
     renderFolder(defaultFolder || "", false);
+  }
+
+  function setupScrollProgress() {
+    const progressBar = document.querySelector("[data-scroll-progress-bar]");
+    if (!progressBar) {
+      return;
+    }
+
+    function updateProgress() {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = scrollHeight > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollHeight)) : 0;
+      progressBar.style.transform = `scaleX(${ratio})`;
+    }
+
+    updateProgress();
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("resize", updateProgress);
+  }
+
+  function setupBackToTop() {
+    const button = document.querySelector("[data-back-to-top]");
+    if (!button) {
+      return;
+    }
+
+    function refreshButtonState() {
+      const shouldShow = window.scrollY > 520;
+      button.classList.toggle("is-visible", shouldShow);
+    }
+
+    button.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    refreshButtonState();
+    window.addEventListener("scroll", refreshButtonState, { passive: true });
+    window.addEventListener("resize", refreshButtonState);
+  }
+
+  function setupInteractiveCards(scope = document) {
+    const supportsPointerEffects = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (!supportsPointerEffects) {
+      return;
+    }
+
+    const cards = scope.querySelectorAll(
+      ".info-card, .team-card, .program-card, .future-tournament-card, .gallery-card, .sponsor-card, .table-card, .contact-form-card"
+    );
+
+    cards.forEach((card) => {
+      if (card.dataset.interactiveBound === "true") {
+        return;
+      }
+      card.dataset.interactiveBound = "true";
+      card.classList.add("premium-interactive-card");
+
+      function resetCard() {
+        card.style.transform = "";
+      }
+
+      card.addEventListener("pointermove", (event) => {
+        const rect = card.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width;
+        const y = (event.clientY - rect.top) / rect.height;
+        const rotateY = (x - 0.5) * 4.5;
+        const rotateX = (0.5 - y) * 4.5;
+        card.style.transform = `perspective(900px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
+      });
+      card.addEventListener("pointerleave", resetCard);
+      card.addEventListener("blur", resetCard);
+    });
   }
 
   function setupGalleryLightbox() {
@@ -1033,7 +1109,10 @@
   }
 
   function setupInteractions() {
+    setupScrollProgress();
+    setupBackToTop();
     setupRevealAnimations();
+    setupInteractiveCards(root);
     if (page === "gallery") {
       setupGalleryFilters();
       setupGalleryFolders();
