@@ -266,7 +266,6 @@
     return `
       <article class="info-card exec-card">
         <div class="exec-card-head">
-          <span class="exec-rank">${String(index + 1).padStart(2, "0")}</span>
           <span class="exec-role">${member.role}</span>
         </div>
         <div class="exec-body">
