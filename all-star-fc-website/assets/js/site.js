@@ -245,13 +245,29 @@
   }
 
   function boardCard(member, index) {
+    const names = String(member.name || "")
+      .split(",")
+      .flatMap((chunk) => chunk.split(/\s+and\s+/i))
+      .map((name) => name.trim())
+      .filter(Boolean);
+
+    const namesMarkup = names.length > 1
+      ? `
+        <ul class="exec-name-list" aria-label="${member.role} members">
+          ${names.map((name) => `<li class="exec-name-item">${name}</li>`).join("")}
+        </ul>
+      `
+      : `<p class="exec-single">${member.name}</p>`;
+
     return `
       <article class="info-card exec-card">
         <div class="exec-card-head">
           <span class="exec-rank">${String(index + 1).padStart(2, "0")}</span>
           <span class="exec-role">${member.role}</span>
         </div>
-        <h3>${member.name}</h3>
+        <div class="exec-body">
+          ${namesMarkup}
+        </div>
       </article>
     `;
   }
