@@ -84,6 +84,43 @@ window.clubContent = {
       emphasis: "After U8-U13, pathway moves to senior team integration."
     }
   ],
+  playerProfiles: [
+    {
+      name: "Profile Slot 01",
+      position: "Goalkeeper",
+      pathway: "Senior Team",
+      preferredFoot: "Right",
+      status: "Active"
+    },
+    {
+      name: "Profile Slot 02",
+      position: "Defender",
+      pathway: "Senior Team",
+      preferredFoot: "Right",
+      status: "Active"
+    },
+    {
+      name: "Profile Slot 03",
+      position: "Defender",
+      pathway: "U8-U13 to Senior Pathway",
+      preferredFoot: "Left",
+      status: "Academy Progression"
+    },
+    {
+      name: "Profile Slot 04",
+      position: "Midfielder",
+      pathway: "Senior Team",
+      preferredFoot: "Right",
+      status: "Active"
+    },
+    {
+      name: "Profile Slot 05",
+      position: "Forward",
+      pathway: "U8-U13 to Senior Pathway",
+      preferredFoot: "Right",
+      status: "Academy Progression"
+    }
+  ],
   board: [
     {
       role: "President",
