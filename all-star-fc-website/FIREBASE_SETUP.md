@@ -29,10 +29,16 @@ This website now uses Firebase for secure portal signup/login.
   - `appId`
   - (optional) `storageBucket`, `messagingSenderId`
   - (optional) `managerAllowlist` with approved manager emails
+- For GitHub Pages, this is a public web-app config, not a server secret.
+- In Google Cloud Console, restrict the API key to your Firebase web app referrers, for example:
+  - `https://ishworconnects.github.io/*`
+  - `http://127.0.0.1:*/*` for local testing
+- If GitHub already flagged an older key value, rotate the key in Google Cloud and update this file with the new restricted key.
 
 ## 6. Test portal
-- Open `contact.html`.
+- Open `index.html` or any site page with the header portal.
 - Create a test account and verify:
   - Signup creates Firebase Auth user
   - Role record is saved in Firestore `club_users/{uid}`
   - Login checks role correctly
+  - If a profile document is ever missing, login restores it for the same account

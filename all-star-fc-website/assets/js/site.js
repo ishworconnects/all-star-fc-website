@@ -404,6 +404,8 @@
     portalPasswordRule: "Salasanassa tulee olla vahintaan 6 merkkia.",
     portalAccountExists: "Talla sahkopostilla on jo tunnus valitussa roolissa.",
     portalSignupSuccess: "Tunnus luotu. Voit nyt kirjautua sisaan.",
+    portalSignupReady: "Tunnus luotu. Kirjautumistiedot on taytetty valmiiksi alle.",
+    portalRecoveredProfile: "Kirjautuminen onnistui roolilla {role}. Profiili palautettiin automaattisesti.",
     portalLoginSuccess: "Kirjautuminen onnistui roolilla {role}.",
     portalLoginFailed: "Tili tai salasana ei tasmaa valitulle roolille.",
     portalAuthUnavailable: "Sahkoposti/salasana-kirjautuminen ei ole viela kaytossa Firebase-projektissa.",
@@ -2136,10 +2138,44 @@
             updatedAt: serverTimestamp()
           }, { merge: true });
 
-          await auth.signOut();
+          const loginEmailField = loginForm?.querySelector("input[name='email']") || null;
+          const loginPasswordField = loginForm?.querySelector("input[name='password']") || null;
+          const loginRoleField = loginForm?.querySelector("select[name='role']") || null;
+          if (loginEmailField) {
+            loginEmailField.value = email;
+          }
+          if (loginPasswordField) {
+            loginPasswordField.value = password;
+          }
+          if (loginRoleField) {
+            loginRoleField.value = role;
+          }
+          if (registerPanel) {
+            registerPanel.hidden = true;
+          }
+          if (registerToggle) {
+            registerToggle.setAttribute("aria-expanded", "false");
+          }
           signupForm.reset();
           setStatus(signupStatus, t("portalSignupSuccess", "Account created. You can now log in."), "success");
+          setStatus(loginStatus, t("portalSignupReady", "Account created. Your login details are ready below."), "info");
         } catch (error) {
+          const currentUser = auth.currentUser;
+          if (
+            currentUser &&
+            currentUser.email &&
+            String(currentUser.email).trim().toLowerCase() === email
+          ) {
+            try {
+              await currentUser.delete();
+            } catch (deleteError) {
+              try {
+                await auth.signOut();
+              } catch (signOutError) {
+                // Keep UI responsive even if cleanup fails.
+              }
+            }
+          }
           setStatus(signupStatus, mapAuthError(error, "signup"), "error");
           try {
             if (auth.currentUser) {
@@ -2191,8 +2227,29 @@
 
           const profileDoc = await usersRef.doc(user.uid).get();
           if (!profileDoc.exists) {
-            await auth.signOut();
-            setStatus(loginStatus, t("portalRoleNotFound", "Profile not found for this account. Please contact club admin."), "error");
+            if (role === "manager" && managerAllowlist.length && !managerAllowlist.includes(email)) {
+              await auth.signOut();
+              setStatus(loginStatus, t("portalManagerRestricted", "Manager signup is restricted. Use an approved manager email."), "error");
+              return;
+            }
+
+            await usersRef.doc(user.uid).set({
+              name: String(user.displayName || email.split("@")[0] || "").trim(),
+              email,
+              role,
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp()
+            }, { merge: true });
+
+            setStatus(
+              loginStatus,
+              tf(
+                "portalRecoveredProfile",
+                "Login successful as {role}. Your profile was restored.",
+                { role: roleLabel(role) }
+              ),
+              "success"
+            );
             return;
           }
 
