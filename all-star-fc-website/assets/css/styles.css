@@ -2625,8 +2625,168 @@ body.lightbox-open {
 
 /* Membership + Portal + Player Profile Enhancements */
 
-.profile-table-card table {
-  min-width: 760px;
+.squad-shell {
+  display: grid;
+  gap: 1rem;
+}
+
+.squad-filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.72rem;
+  flex-wrap: wrap;
+}
+
+.squad-filter-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #1a8d4e;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #17653a;
+  padding: 0.72rem 1.18rem;
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: clamp(0.95rem, 0.65vw + 0.8rem, 1.12rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.squad-filter-button:hover,
+.squad-filter-button.is-active {
+  border-color: #0f5d33;
+  background: linear-gradient(135deg, #148246 0%, #0e6034 100%);
+  color: #f5fff8;
+  box-shadow: 0 16px 30px rgba(13, 67, 37, 0.18);
+  transform: translateY(-1px);
+}
+
+.squad-filter-button:focus-visible {
+  outline: 3px solid rgba(19, 122, 67, 0.24);
+  outline-offset: 2px;
+}
+
+.squad-stage {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.squad-stage-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.squad-group-heading {
+  margin: 0;
+  color: #168648;
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: clamp(2rem, 3.6vw, 3.35rem);
+  line-height: 0.92;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.player-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.1rem;
+}
+
+.player-profile-card {
+  overflow: hidden;
+  border: 1px solid rgba(18, 67, 41, 0.12);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 18px 36px rgba(7, 34, 22, 0.12);
+}
+
+.player-profile-card[hidden] {
+  display: none !important;
+}
+
+.player-card-media {
+  position: relative;
+  aspect-ratio: 0.94;
+  background: linear-gradient(135deg, #d9f1e2 0%, #b1d9c2 100%);
+}
+
+.player-card-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 26, 16, 0.02) 0%, rgba(6, 26, 16, 0.08) 58%, rgba(6, 26, 16, 0.26) 100%);
+  pointer-events: none;
+}
+
+.player-card-media img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.player-card-number {
+  position: absolute;
+  top: 0.78rem;
+  left: 0.78rem;
+  z-index: 1;
+  min-width: 3rem;
+  padding: 0.32rem 0.6rem;
+  background: rgba(248, 255, 250, 0.96);
+  color: #148246;
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: clamp(1.18rem, 0.85vw + 0.98rem, 1.6rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.player-card-body {
+  display: grid;
+  gap: 0.38rem;
+  padding: 0.95rem 1rem 1.08rem;
+}
+
+.player-card-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.player-card-position {
+  color: #1c7844;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.player-card-country {
+  font-size: 1.38rem;
+  line-height: 1;
+}
+
+.player-card-body h3 {
+  margin: 0;
+  color: #0f2f20;
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: clamp(1.34rem, 0.9vw + 1.1rem, 1.85rem);
+  line-height: 0.96;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.player-card-body p {
+  margin: 0;
+  color: #446654;
+  font-size: 0.95rem;
+  line-height: 1.45;
 }
 
 .membership-grid {
@@ -2674,15 +2834,36 @@ body.lightbox-open {
   margin-bottom: 0.4rem;
 }
 
-@media (max-width: 980px) {
-  .profile-table-card table {
-    min-width: 640px;
+@media (max-width: 1080px) {
+  .player-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .squad-filter-row,
+  .squad-stage-head {
+    justify-content: flex-start;
+  }
+
+  .squad-stage-head {
+    align-items: start;
+    flex-direction: column;
   }
 }
 
 @media (max-width: 640px) {
-  .profile-table-card table {
-    min-width: 580px;
+  .player-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .squad-filter-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .player-card-body {
+    padding: 0.9rem 0.92rem 1rem;
   }
 }
 

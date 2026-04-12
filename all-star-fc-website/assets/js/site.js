@@ -1472,6 +1472,66 @@
     return "";
   }
 
+  function playerGroupDefinitions() {
+    return [
+      { key: "goalkeepers", label: t("goalkeepersLabel", "Goalkeepers") },
+      { key: "defenders", label: t("defendersLabel", "Defenders") },
+      { key: "midfielders", label: t("midfieldersLabel", "Midfielders") },
+      { key: "forwards", label: t("forwardsLabel", "Forwards") }
+    ];
+  }
+
+  function normalizePlayerGroup(value) {
+    const raw = String(value || "").trim().toLowerCase();
+    if (raw.startsWith("goal")) {
+      return "goalkeepers";
+    }
+    if (raw.startsWith("def")) {
+      return "defenders";
+    }
+    if (raw.startsWith("mid")) {
+      return "midfielders";
+    }
+    if (raw.startsWith("for")) {
+      return "forwards";
+    }
+    return "defenders";
+  }
+
+  function countryFlagEmoji(code) {
+    const normalized = String(code || "").trim().toUpperCase();
+    if (!/^[A-Z]{2}$/.test(normalized)) {
+      return "";
+    }
+    return String.fromCodePoint(...normalized.split("").map((char) => 127397 + char.charCodeAt(0)));
+  }
+
+  function playerProfileCard(profile) {
+    const group = normalizePlayerGroup(profile.group || profile.position);
+    const image = profile.image || tournamentFallback;
+    const shirtNumber = profile.number || "--";
+    const flag = countryFlagEmoji(profile.countryCode);
+    const pathway = profile.pathway || profile.status || "";
+    const flagLabel = profile.countryCode || "";
+
+    return `
+      <article class="player-profile-card" data-player-card data-player-group="${group}">
+        <div class="player-card-media">
+          <img src="${image}" alt="${profile.name}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/images/tournament-placeholder.svg'">
+          <span class="player-card-number">${shirtNumber}</span>
+        </div>
+        <div class="player-card-body">
+          <div class="player-card-topline">
+            <span class="player-card-position">${profile.position}</span>
+            ${flag ? `<span class="player-card-country" aria-label="${flagLabel}">${flag}</span>` : ""}
+          </div>
+          <h3>${profile.name}</h3>
+          ${pathway ? `<p>${pathway}</p>` : ""}
+        </div>
+      </article>
+    `;
+  }
+
   function boardCard(member, index) {
     const names = String(member.name || "")
       .split(",")
@@ -1506,7 +1566,7 @@
   }
   function setupRevealAnimations() {
     const revealTargets = root.querySelectorAll(
-      ".content-section .info-card, .content-section .team-card, .content-section .program-card, .content-section .table-card, .content-section .gallery-card, .content-section .future-tournament-card, .content-section .sponsor-card, .content-section .membership-card, .content-section .emphasis-card"
+      ".content-section .info-card, .content-section .team-card, .content-section .program-card, .content-section .table-card, .content-section .gallery-card, .content-section .future-tournament-card, .content-section .sponsor-card, .content-section .membership-card, .content-section .emphasis-card, .content-section .player-profile-card"
     );
 
     if (!revealTargets.length) {
@@ -1562,6 +1622,61 @@
     });
 
     applyFilter("All");
+  }
+
+  function setupSquadFilters() {
+    const filterRoot = root.querySelector("[data-squad-filters]");
+    if (!filterRoot) {
+      return;
+    }
+
+    const filterButtons = Array.from(filterRoot.querySelectorAll("[data-squad-filter]"));
+    const cards = Array.from(root.querySelectorAll("[data-player-card]"));
+    const heading = root.querySelector("[data-squad-group-title]");
+    if (!filterButtons.length || !cards.length) {
+      return;
+    }
+
+    const availableGroups = new Set(cards.map((card) => card.dataset.playerGroup).filter(Boolean));
+    filterButtons.forEach((button) => {
+      const hasProfiles = availableGroups.has(button.dataset.squadFilter || "");
+      button.hidden = !hasProfiles;
+      button.disabled = !hasProfiles;
+    });
+
+    const visibleButtons = filterButtons.filter((button) => !button.hidden);
+    const defaultGroup = visibleButtons[0]?.dataset.squadFilter || cards[0]?.dataset.playerGroup;
+    if (!defaultGroup) {
+      return;
+    }
+
+    function applyFilter(group) {
+      const activeButton = visibleButtons.find((button) => button.dataset.squadFilter === group) || visibleButtons[0];
+      const activeGroup = activeButton?.dataset.squadFilter || group;
+
+      visibleButtons.forEach((button) => {
+        const isActive = button === activeButton;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+
+      cards.forEach((card) => {
+        const isVisible = card.dataset.playerGroup === activeGroup;
+        card.hidden = !isVisible;
+      });
+
+      if (heading && activeButton) {
+        heading.textContent = activeButton.textContent.trim();
+      }
+    }
+
+    visibleButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        applyFilter(button.dataset.squadFilter || defaultGroup);
+      });
+    });
+
+    applyFilter(defaultGroup);
   }
 
   function setupGalleryFolders() {
@@ -1675,7 +1790,7 @@
     }
 
     const cards = scope.querySelectorAll(
-      ".info-card, .team-card, .program-card, .future-tournament-card, .gallery-card, .sponsor-card, .table-card, .contact-form-card, .membership-card"
+      ".info-card, .team-card, .program-card, .future-tournament-card, .gallery-card, .sponsor-card, .table-card, .contact-form-card, .membership-card, .player-profile-card"
     );
 
     cards.forEach((card) => {
@@ -2078,7 +2193,96 @@
 
     const { auth, db, profileCollection, managerAllowlist } = firebaseContext;
     const usersRef = db.collection(profileCollection);
-    const serverTimestamp = () => window.firebase.firestore.FieldValue.serverTimestamp();
+    const firestoreBaseUrl = `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(String(window.allStarFirebaseConfig?.projectId || ""))}/databases/(default)/documents`;
+
+    function profileDocumentUrl(uid) {
+      return `${firestoreBaseUrl}/${encodeURIComponent(profileCollection)}/${encodeURIComponent(uid)}`;
+    }
+
+    function encodeFirestoreString(value) {
+      return { stringValue: String(value || "") };
+    }
+
+    function decodeFirestoreString(fields, key) {
+      return String(fields?.[key]?.stringValue || "").trim();
+    }
+
+    async function writeProfileDocument(user, profile) {
+      const token = await user.getIdToken(true);
+      const now = new Date().toISOString();
+      const payload = {
+        fields: {
+          name: encodeFirestoreString(profile.name),
+          email: encodeFirestoreString(profile.email),
+          role: encodeFirestoreString(profile.role),
+          createdAt: encodeFirestoreString(profile.createdAt || now),
+          updatedAt: encodeFirestoreString(now)
+        }
+      };
+
+      if (typeof window.fetch === "function") {
+        const response = await window.fetch(profileDocumentUrl(user.uid), {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          const error = new Error("portal_profile_write_failed");
+          error.code = response.status === 403 ? "firestore/permission-denied" : "firestore/write-failed";
+          throw error;
+        }
+        return;
+      }
+
+      await usersRef.doc(user.uid).set({
+        name: profile.name,
+        email: profile.email,
+        role: profile.role,
+        createdAt: profile.createdAt || now,
+        updatedAt: now
+      }, { merge: true });
+    }
+
+    async function readProfileDocument(user) {
+      const token = await user.getIdToken(true);
+
+      if (typeof window.fetch === "function") {
+        const response = await window.fetch(profileDocumentUrl(user.uid), {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (response.status === 404) {
+          return null;
+        }
+
+        if (!response.ok) {
+          const error = new Error("portal_profile_read_failed");
+          error.code = response.status === 403 ? "firestore/permission-denied" : "firestore/read-failed";
+          throw error;
+        }
+
+        const data = await response.json();
+        const fields = data?.fields || {};
+        return {
+          name: decodeFirestoreString(fields, "name"),
+          email: decodeFirestoreString(fields, "email"),
+          role: decodeFirestoreString(fields, "role")
+        };
+      }
+
+      const profileDoc = await usersRef.doc(user.uid).get();
+      if (!profileDoc.exists) {
+        return null;
+      }
+      return profileDoc.data() || null;
+    }
 
     if (signupForm) {
       const signupButton = signupForm.querySelector("button[type='submit']");
@@ -2130,13 +2334,7 @@
           }
 
           await user.updateProfile({ displayName: name });
-          await usersRef.doc(user.uid).set({
-            name,
-            email,
-            role,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp()
-          }, { merge: true });
+          await writeProfileDocument(user, { name, email, role });
 
           const loginEmailField = loginForm?.querySelector("input[name='email']") || null;
           const loginPasswordField = loginForm?.querySelector("input[name='password']") || null;
@@ -2225,21 +2423,19 @@
             throw new Error("portal_login_user_missing");
           }
 
-          const profileDoc = await usersRef.doc(user.uid).get();
-          if (!profileDoc.exists) {
+          const profileData = await readProfileDocument(user);
+          if (!profileData) {
             if (role === "manager" && managerAllowlist.length && !managerAllowlist.includes(email)) {
               await auth.signOut();
               setStatus(loginStatus, t("portalManagerRestricted", "Manager signup is restricted. Use an approved manager email."), "error");
               return;
             }
 
-            await usersRef.doc(user.uid).set({
+            await writeProfileDocument(user, {
               name: String(user.displayName || email.split("@")[0] || "").trim(),
               email,
-              role,
-              createdAt: serverTimestamp(),
-              updatedAt: serverTimestamp()
-            }, { merge: true });
+              role
+            });
 
             setStatus(
               loginStatus,
@@ -2253,7 +2449,6 @@
             return;
           }
 
-          const profileData = profileDoc.data() || {};
           const savedRole = String(profileData.role || "").trim().toLowerCase();
           if (!savedRole || savedRole !== role) {
             await auth.signOut();
@@ -2484,6 +2679,12 @@
     `;
   }
   function renderTeams() {
+    const groupDefinitions = playerGroupDefinitions().filter((group) =>
+      localized.playerProfiles.some((profile) => normalizePlayerGroup(profile.group || profile.position) === group.key)
+    );
+    const defaultGroup = groupDefinitions[0]?.key || "goalkeepers";
+    const defaultGroupLabel = groupDefinitions[0]?.label || t("goalkeepersLabel", "Goalkeepers");
+
     root.innerHTML = `
       <section class="page-hero">
         <div class="section-shell">
@@ -2517,31 +2718,35 @@
 
       <section class="content-section tint-section">
         <div class="section-shell">
-          ${sectionHeading(t("playerProfilesEyebrow", "Player profiles"), t("playerProfilesTitle", "Player profile table"), t("playerProfilesCopy", "Manager can update player slots from the shared content file."))}
-          <div class="table-card profile-table-card">
-            <table>
-              <caption class="sr-only">${t("playerProfilesEyebrow", "Player profiles")}</caption>
-              <thead>
-                <tr>
-                  <th>${t("profileNameCol", "Name")}</th>
-                  <th>${t("profilePositionCol", "Position")}</th>
-                  <th>${t("profilePathwayCol", "Pathway")}</th>
-                  <th>${t("profileFootCol", "Preferred Foot")}</th>
-                  <th>${t("profileStatusCol", "Status")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${localized.playerProfiles.map((profile) => `
-                  <tr>
-                    <td>${profile.name}</td>
-                    <td>${profile.position}</td>
-                    <td>${profile.pathway}</td>
-                    <td>${profile.preferredFoot}</td>
-                    <td>${profile.status}</td>
-                  </tr>
-                `).join("")}
-              </tbody>
-            </table>
+          ${sectionHeading(t("playerProfilesEyebrow", "Player profiles"), t("playerProfilesTitle", "Senior squad profiles"), t("playerProfilesCopy", "Use the position filters to browse the current senior squad profiles."))}
+          <div class="squad-shell">
+            <div class="squad-filter-row" data-squad-filters>
+              ${groupDefinitions.map((group) => `
+                <button
+                  class="squad-filter-button${group.key === defaultGroup ? " is-active" : ""}"
+                  type="button"
+                  data-squad-filter="${group.key}"
+                  aria-pressed="${group.key === defaultGroup ? "true" : "false"}"
+                >
+                  ${group.label}
+                </button>
+              `).join("")}
+            </div>
+            <div class="squad-stage">
+              <div class="squad-stage-head">
+                <h3 class="squad-group-heading" data-squad-group-title>${defaultGroupLabel}</h3>
+              </div>
+              <div class="player-card-grid">
+                ${localized.playerProfiles.length
+                  ? localized.playerProfiles.map((profile) => playerProfileCard(profile)).join("")
+                  : `
+                    <article class="info-card">
+                      <h3>${t("playerProfilesEmptyTitle", "Senior squad profiles coming soon")}</h3>
+                      <p>${t("playerProfilesEmptyCopy", "Add player names and photos in the shared content file to populate this section.")}</p>
+                    </article>
+                  `}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -2906,6 +3111,9 @@
     setupBackToTop();
     setupRevealAnimations();
     setupInteractiveCards(root);
+    if (page === "teams") {
+      setupSquadFilters();
+    }
     if (page === "gallery") {
       setupGalleryFilters();
       setupGalleryFolders();
