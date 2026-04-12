@@ -1,0 +1,22 @@
+{
+  "firestore": {
+    "rules": "firebase/firestore.rules"
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      ".firebaserc",
+      "**/.*",
+      "**/node_modules/**",
+      "firebase/**",
+      "FIREBASE_SETUP.md",
+      "firebase.exe",
+      "firebase-win.exe",
+      "firepit-log.txt",
+      "node-index.json",
+      "node-v20*.zip",
+      "node-runtime/**"
+    ]
+  }
+}

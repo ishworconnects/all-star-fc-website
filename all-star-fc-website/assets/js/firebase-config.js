@@ -9,6 +9,10 @@ window.allStarFirebaseConfig = (() => {
     storageBucket: "all-star-fc-website.firebasestorage.app",
     messagingSenderId: "298980650484",
     profileCollection: "club_users",
-    managerAllowlist: ["allstarfc.helsinki@gmail.com"]
+    managerAllowlist: [
+      "allstarfc.helsinki@gmail.com",
+      "ishwor.kunwor1993@gmail.com",
+      "ishwor.kunwor13@gmail.com"
+    ]
   };
 })();

@@ -1,0 +1,7 @@
+.firebase/
+firebase.exe
+firebase-win.exe
+firepit-log.txt
+node-index.json
+node-runtime/
+node-v20*.zip
