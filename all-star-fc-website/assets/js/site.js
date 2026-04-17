@@ -2106,6 +2106,8 @@
   function setupPortalForms() {
     const signupForm = headerRoot.querySelector("[data-signup-form]") || root.querySelector("[data-signup-form]");
     const loginForm = headerRoot.querySelector("[data-login-form]") || root.querySelector("[data-login-form]");
+    const registerToggle = headerRoot.querySelector("[data-register-toggle]") || root.querySelector("[data-register-toggle]");
+    const registerPanel = headerRoot.querySelector("[data-register-panel]") || root.querySelector("[data-register-panel]");
     if (!signupForm && !loginForm) {
       return;
     }
@@ -2163,6 +2165,9 @@
         if (code === "auth/operation-not-allowed") {
           return t("portalAuthUnavailable", "Email/password authentication is not enabled yet.");
         }
+        if (code === "firestore/permission-denied") {
+          return t("portalProfileSaveDenied", "Account was created, but the club profile could not be saved because Firestore permissions are blocking it.");
+        }
         return t("portalSignupFailed", "Could not create account right now. Please try again.");
       }
 
@@ -2177,6 +2182,9 @@
       }
       if (code === "auth/operation-not-allowed") {
         return t("portalAuthUnavailable", "Email/password authentication is not enabled yet.");
+      }
+      if (code === "firestore/permission-denied") {
+        return t("portalProfileReadDenied", "Login reached Firebase Auth, but the club profile could not be read because Firestore permissions are blocking it.");
       }
       return t("portalLoginError", "Login could not be completed right now. Please try again.");
     }
