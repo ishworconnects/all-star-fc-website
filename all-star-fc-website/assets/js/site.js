@@ -1071,7 +1071,6 @@
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <circle cx="12" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
         <path d="M5.5 19c.8-3 3.4-5 6.5-5s5.7 2 6.5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-        <path d="M18.6 5.6h-2.2m1.1-1.1v2.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
       </svg>
     `;
   }
@@ -1098,10 +1097,15 @@
             `).join("")}
           </div>
           <div class="utility-links utility-right utility-socials" aria-label="${t("clubSocialLinks", "Club social links")}">
-            <button class="auth-launch-button" type="button" data-auth-launch aria-haspopup="dialog" aria-expanded="false" aria-label="${t("signInHere", "Sign in here")}">
-              ${portalAccessIcon()}
-              <span>${t("signInHere", "Sign in here")}</span>
-            </button>
+            <div class="auth-launch-group" role="group" aria-label="${t("portalAccess", "Sign in / Sign up")}">
+              <button class="auth-launch-button is-login" type="button" data-auth-launch data-auth-view="login" aria-haspopup="dialog" aria-expanded="false">
+                <span class="auth-launch-icon" aria-hidden="true">${portalAccessIcon()}</span>
+                <span class="auth-launch-label">${t("portalLoginTitle", "Log in")}</span>
+              </button>
+              <button class="auth-launch-button is-register" type="button" data-auth-launch data-auth-view="register" aria-haspopup="dialog" aria-expanded="false">
+                <span class="auth-launch-label">${t("portalSignupTitle", "Register")}</span>
+              </button>
+            </div>
             ${localized.clubMeta.socialLinks.map((social) => `
               <a class="social-logo-link" href="${social.href}" target="_blank" rel="noreferrer" aria-label="${social.label}">
                 ${socialIcon(social.label)}
@@ -1147,75 +1151,99 @@
         <button class="portal-modal-backdrop" type="button" data-auth-close tabindex="-1" aria-hidden="true"></button>
         <div class="portal-modal-panel" role="dialog" aria-modal="true" aria-labelledby="portal-modal-title">
           <button class="portal-modal-close" type="button" data-auth-close aria-label="${t("closePortal", "Close portal")}">&times;</button>
-          <section class="portal-signin-block">
-            <h2 id="portal-modal-title">${t("portalSigninHeadline", "Sign in to your All Star FC digital account")}</h2>
-            <form class="portal-login-form" data-login-form novalidate>
-              <label class="form-field">
-                <span class="sr-only">${t("emailField", "Email *")}</span>
-                <input type="email" name="email" placeholder="${t("portalEmailPlaceholder", "email")}" required>
-              </label>
-              <label class="form-field">
-                <span class="sr-only">${t("passwordField", "Password *")}</span>
-                <input type="password" name="password" minlength="6" placeholder="${t("portalPasswordPlaceholder", "password")}" required>
-              </label>
-              <label class="form-field portal-role-field">
-                <span>${t("roleField", "Role *")}</span>
-                <select name="role" required>
-                  <option value="manager">${t("roleManager", "Manager")}</option>
-                  <option value="player">${t("rolePlayer", "Player")}</option>
-                  <option value="member">${t("roleMember", "Member")}</option>
-                </select>
-              </label>
-              <p class="portal-signin-note">${t("portalSigninNote", "Use your registered role to access manager, player, or member area.")}</p>
-              <div class="form-actions">
-                <button class="portal-action-button" type="submit">${t("signInHere", "Sign in here")}</button>
-                <p class="form-status" data-login-status hidden></p>
+          <div class="portal-auth-layout">
+            <aside class="portal-brand-panel">
+              <p class="portal-panel-eyebrow">${t("officialSite", "Official All Star FC Website")}</p>
+              <h2 id="portal-modal-title">${t("portalAccessHeadline", "All Star FC digital access")}</h2>
+              <p class="portal-panel-copy">${t("portalAccessCopy", "Use one secure club account to sign in as a manager, player, or member.")}</p>
+              <div class="portal-highlight-list">
+                <article class="portal-highlight-item">
+                  <strong>${t("portalLoginTitle", "Log in")}</strong>
+                  <span>${t("portalSigninNote", "Use your registered role to access manager, player, or member area.")}</span>
+                </article>
+                <article class="portal-highlight-item">
+                  <strong>${t("portalSignupTitle", "Register")}</strong>
+                  <span>${t("portalRegisterCopy", "Create your account once, then use the same role each time you sign in.")}</span>
+                </article>
               </div>
-            </form>
-          </section>
-          <section class="portal-register-banner">
-            <h3>${t("portalRegisterHeadline", "Register for a free All Star FC digital account")}</h3>
-            <p>${t("portalRegisterCopy", "Not got an account? Sign up now for your free All Star FC digital account.")}</p>
-            <button class="portal-register-toggle" type="button" data-register-toggle aria-expanded="false">
-              ${portalAccessIcon()}
-              <span>${t("registerNow", "Register now")}</span>
-            </button>
-          </section>
-          <section class="portal-register-panel" data-register-panel hidden>
-            <h3>${t("portalSignupTitle", "Create account")}</h3>
-            <form class="portal-signup-form" data-signup-form novalidate>
-              <div class="form-grid">
-                <label class="form-field">
-                  <span>${t("fullNameField", "Full name *")}</span>
-                  <input type="text" name="name" required>
-                </label>
-                <label class="form-field">
-                  <span>${t("emailField", "Email *")}</span>
-                  <input type="email" name="email" required>
-                </label>
-                <label class="form-field">
-                  <span>${t("roleField", "Role *")}</span>
-                  <select name="role" required>
-                    <option value="manager">${t("roleManager", "Manager")}</option>
-                    <option value="player">${t("rolePlayer", "Player")}</option>
-                    <option value="member">${t("roleMember", "Member")}</option>
-                  </select>
-                </label>
-                <label class="form-field">
-                  <span>${t("passwordField", "Password *")}</span>
-                  <input type="password" name="password" minlength="6" required>
-                </label>
-                <label class="form-field">
-                  <span>${t("confirmPasswordField", "Confirm Password *")}</span>
-                  <input type="password" name="confirmPassword" minlength="6" required>
-                </label>
+              <button class="portal-side-switch" type="button" data-auth-shortcut="register">${t("registerNow", "Create account")}</button>
+            </aside>
+            <section class="portal-form-stage">
+              <div class="portal-tab-bar" role="tablist" aria-label="${t("portalAccess", "Sign in / Sign up")}">
+                <button class="portal-tab is-active" type="button" role="tab" aria-selected="true" data-auth-tab="login">${t("portalLoginTitle", "Log in")}</button>
+                <button class="portal-tab" type="button" role="tab" aria-selected="false" data-auth-tab="register">${t("portalSignupTitle", "Register")}</button>
               </div>
-              <div class="form-actions">
-                <button class="portal-register-submit" type="submit">${t("registerNow", "Register now")}</button>
-                <p class="form-status" data-signup-status hidden></p>
-              </div>
-            </form>
-          </section>
+              <section class="portal-auth-panel portal-auth-panel-login" data-auth-panel="login">
+                <p class="portal-panel-kicker">${t("portalLoginEyebrow", "Club login")}</p>
+                <h3>${t("portalSigninHeadline", "Log in to your All Star FC account")}</h3>
+                <p class="portal-signin-note">${t("portalSigninNote", "Use your registered role to access manager, player, or member area.")}</p>
+                <form class="portal-login-form" data-login-form novalidate>
+                  <label class="form-field">
+                    <span class="sr-only">${t("emailField", "Email *")}</span>
+                    <input type="email" name="email" autocomplete="email" placeholder="${t("portalEmailPlaceholder", "Email address")}" required>
+                  </label>
+                  <label class="form-field">
+                    <span class="sr-only">${t("passwordField", "Password *")}</span>
+                    <input type="password" name="password" autocomplete="current-password" minlength="6" placeholder="${t("portalPasswordPlaceholder", "Password")}" required>
+                  </label>
+                  <label class="form-field portal-role-field">
+                    <span>${t("roleField", "Role *")}</span>
+                    <select name="role" required>
+                      <option value="manager">${t("roleManager", "Manager")}</option>
+                      <option value="player">${t("rolePlayer", "Player")}</option>
+                      <option value="member">${t("roleMember", "Member")}</option>
+                    </select>
+                  </label>
+                  <div class="portal-inline-actions">
+                    <button class="portal-text-link" type="button" data-reset-password>${t("portalForgotPassword", "Forgotten password?")}</button>
+                    <span class="portal-inline-hint">${t("portalRoleHelper", "Choose the same role you used when registering.")}</span>
+                  </div>
+                  <div class="form-actions">
+                    <button class="portal-action-button" type="submit">${t("portalLoginTitle", "Log in")}</button>
+                    <p class="form-status" data-login-status hidden></p>
+                  </div>
+                </form>
+              </section>
+              <section class="portal-auth-panel portal-auth-panel-register" data-auth-panel="register" hidden>
+                <p class="portal-panel-kicker">${t("portalRegisterEyebrow", "Create your club account")}</p>
+                <h3>${t("portalRegisterHeadline", "Register for an All Star FC digital account")}</h3>
+                <p class="portal-signin-note">${t("portalRegisterCopy", "Create your account once, then use the same role each time you sign in.")}</p>
+                <form class="portal-signup-form" data-signup-form novalidate>
+                  <div class="form-grid">
+                    <label class="form-field">
+                      <span>${t("fullNameField", "Full name *")}</span>
+                      <input type="text" name="name" autocomplete="name" required>
+                    </label>
+                    <label class="form-field">
+                      <span>${t("emailField", "Email *")}</span>
+                      <input type="email" name="email" autocomplete="email" required>
+                    </label>
+                    <label class="form-field">
+                      <span>${t("roleField", "Role *")}</span>
+                      <select name="role" required>
+                        <option value="manager">${t("roleManager", "Manager")}</option>
+                        <option value="player">${t("rolePlayer", "Player")}</option>
+                        <option value="member">${t("roleMember", "Member")}</option>
+                      </select>
+                    </label>
+                    <label class="form-field">
+                      <span>${t("passwordField", "Password *")}</span>
+                      <input type="password" name="password" autocomplete="new-password" minlength="6" required>
+                    </label>
+                    <label class="form-field">
+                      <span>${t("confirmPasswordField", "Confirm Password *")}</span>
+                      <input type="password" name="confirmPassword" autocomplete="new-password" minlength="6" required>
+                    </label>
+                  </div>
+                  <p class="portal-register-note">${t("portalManagerRule", "Manager registration uses approved club email addresses only.")}</p>
+                  <div class="form-actions">
+                    <button class="portal-register-submit" type="submit">${t("registerNow", "Register now")}</button>
+                    <p class="form-status" data-signup-status hidden></p>
+                  </div>
+                </form>
+              </section>
+            </section>
+          </div>
         </div>
       </div>
     `;
@@ -1239,21 +1267,47 @@
       });
     });
 
-    const authLaunch = headerRoot.querySelector("[data-auth-launch]");
+    const authLaunchButtons = Array.from(headerRoot.querySelectorAll("[data-auth-launch]"));
     const authModal = headerRoot.querySelector("[data-auth-modal]");
     const authCloseButtons = headerRoot.querySelectorAll("[data-auth-close]");
-    const registerToggle = headerRoot.querySelector("[data-register-toggle]");
-    const registerPanel = headerRoot.querySelector("[data-register-panel]");
-    if (authLaunch && authModal) {
-      const focusTarget = authModal.querySelector("[data-login-form] input[name='email']");
-      const resetRegisterPanel = () => {
-        if (registerPanel) {
-          registerPanel.hidden = true;
-        }
-        if (registerToggle) {
-          registerToggle.setAttribute("aria-expanded", "false");
+    const authTabButtons = Array.from(headerRoot.querySelectorAll("[data-auth-tab]"));
+    const authShortcutButtons = Array.from(headerRoot.querySelectorAll("[data-auth-shortcut]"));
+    const authPanels = Array.from(headerRoot.querySelectorAll("[data-auth-panel]"));
+    if (authLaunchButtons.length && authModal) {
+      let activeAuthView = "login";
+      const syncLaunchState = (expanded) => {
+        authLaunchButtons.forEach((button) => {
+          button.setAttribute("aria-expanded", String(expanded));
+        });
+      };
+      const focusPortalField = () => {
+        const selector = activeAuthView === "register"
+          ? "[data-auth-panel='register'] input[name='name']"
+          : "[data-auth-panel='login'] input[name='email']";
+        const focusTarget = authModal.querySelector(selector);
+        if (focusTarget instanceof HTMLElement) {
+          focusTarget.focus();
         }
       };
+      const switchAuthView = (view = "login", options = {}) => {
+        activeAuthView = view === "register" ? "register" : "login";
+        authModal.dataset.authView = activeAuthView;
+        authPanels.forEach((panel) => {
+          panel.hidden = panel.dataset.authPanel !== activeAuthView;
+        });
+        authTabButtons.forEach((button) => {
+          const isActive = button.dataset.authTab === activeAuthView;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-selected", String(isActive));
+        });
+        authShortcutButtons.forEach((button) => {
+          button.classList.toggle("is-active", button.dataset.authShortcut === activeAuthView);
+        });
+        if (options.focus) {
+          focusPortalField();
+        }
+      };
+      authModal.__setPortalView = switchAuthView;
       const isCompactPortalViewport = () => window.matchMedia("(max-width: 980px)").matches;
       const syncPortalViewportMode = () => {
         if (authModal.hidden) {
@@ -1268,38 +1322,49 @@
       };
       const closePortal = () => {
         authModal.hidden = true;
-        authLaunch.setAttribute("aria-expanded", "false");
+        syncLaunchState(false);
         document.body.classList.remove("auth-modal-open");
-        resetRegisterPanel();
+        switchAuthView("login");
       };
-      const openPortal = () => {
+      const openPortal = (view = "login") => {
         authModal.hidden = false;
-        authLaunch.setAttribute("aria-expanded", "true");
+        syncLaunchState(true);
+        switchAuthView(view);
         syncPortalViewportMode();
-        if (focusTarget) {
-          focusTarget.focus();
-        }
+        focusPortalField();
       };
 
-      authLaunch.addEventListener("click", () => {
-        if (authModal.hidden) {
-          openPortal();
-        } else {
+      authLaunchButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const desiredView = button.dataset.authView || "login";
+          if (authModal.hidden) {
+            openPortal(desiredView);
+            return;
+          }
+          if (activeAuthView !== desiredView) {
+            switchAuthView(desiredView, { focus: true });
+            return;
+          }
           closePortal();
-        }
+        });
       });
 
       authCloseButtons.forEach((button) => {
         button.addEventListener("click", closePortal);
       });
 
-      if (registerToggle && registerPanel) {
-        registerToggle.addEventListener("click", () => {
-          const isHidden = registerPanel.hidden;
-          registerPanel.hidden = !isHidden;
-          registerToggle.setAttribute("aria-expanded", String(isHidden));
+      authTabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          switchAuthView(button.dataset.authTab || "login", { focus: true });
         });
-      }
+      });
+
+      authShortcutButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const nextView = button.dataset.authShortcut || "register";
+          switchAuthView(nextView, { focus: true });
+        });
+      });
 
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape" && !authModal.hidden) {
@@ -1315,13 +1380,14 @@
         if (!(target instanceof Node)) {
           return;
         }
-        if (authModal.contains(target) || authLaunch.contains(target)) {
+        if (authModal.contains(target) || authLaunchButtons.some((button) => button.contains(target))) {
           return;
         }
         closePortal();
       });
 
       window.addEventListener("resize", syncPortalViewportMode);
+      switchAuthView("login");
     }
   }
 
@@ -2157,8 +2223,8 @@
   function setupPortalForms() {
     const signupForm = headerRoot.querySelector("[data-signup-form]") || root.querySelector("[data-signup-form]");
     const loginForm = headerRoot.querySelector("[data-login-form]") || root.querySelector("[data-login-form]");
-    const registerToggle = headerRoot.querySelector("[data-register-toggle]") || root.querySelector("[data-register-toggle]");
-    const registerPanel = headerRoot.querySelector("[data-register-panel]") || root.querySelector("[data-register-panel]");
+    const authModal = headerRoot.querySelector("[data-auth-modal]") || root.querySelector("[data-auth-modal]");
+    const resetPasswordButton = headerRoot.querySelector("[data-reset-password]") || root.querySelector("[data-reset-password]");
     if (!signupForm && !loginForm) {
       return;
     }
@@ -2201,6 +2267,12 @@
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
     }
 
+    function switchPortalView(view) {
+      if (authModal && typeof authModal.__setPortalView === "function") {
+        authModal.__setPortalView(view);
+      }
+    }
+
     function mapAuthError(error, mode) {
       const code = String(error?.code || "");
       if (mode === "signup") {
@@ -2213,17 +2285,32 @@
         if (code === "auth/invalid-email") {
           return t("formStatusEmail", "Please use a valid email address.");
         }
+        if (code === "auth/unauthorized-domain") {
+          return t("portalUnauthorizedDomain", "This website domain is not authorised in Firebase Auth yet. Add this domain in Firebase Authentication settings.");
+        }
+        if (code === "auth/network-request-failed") {
+          return t("portalNetworkError", "Firebase could not be reached. Check your internet connection and Firebase project setup.");
+        }
         if (code === "auth/operation-not-allowed") {
           return t("portalAuthUnavailable", "Email/password authentication is not enabled yet.");
         }
         if (code === "firestore/permission-denied") {
           return t("portalProfileSaveDenied", "Account was created, but the club profile could not be saved because Firestore permissions are blocking it.");
         }
+        if (code === "firestore/write-failed") {
+          return t("portalProfileSaveFailed", "Account was created, but the club profile could not be saved. Check Firestore rules and database setup.");
+        }
         return t("portalSignupFailed", "Could not create account right now. Please try again.");
       }
 
       if (code === "auth/invalid-email") {
         return t("formStatusEmail", "Please use a valid email address.");
+      }
+      if (code === "auth/unauthorized-domain") {
+        return t("portalUnauthorizedDomain", "This website domain is not authorised in Firebase Auth yet. Add this domain in Firebase Authentication settings.");
+      }
+      if (code === "auth/network-request-failed") {
+        return t("portalNetworkError", "Firebase could not be reached. Check your internet connection and Firebase project setup.");
       }
       if (code === "auth/user-not-found" || code === "auth/wrong-password" || code === "auth/invalid-credential") {
         return t("portalLoginFailed", "Account or password does not match this role.");
@@ -2236,6 +2323,9 @@
       }
       if (code === "firestore/permission-denied") {
         return t("portalProfileReadDenied", "Login reached Firebase Auth, but the club profile could not be read because Firestore permissions are blocking it.");
+      }
+      if (code === "firestore/read-failed") {
+        return t("portalProfileReadFailed", "Login reached Firebase Auth, but the club profile could not be read. Check Firestore rules and database setup.");
       }
       return t("portalLoginError", "Login could not be completed right now. Please try again.");
     }
@@ -2412,6 +2502,43 @@
       throw new Error("portal_profile_read_unavailable");
     }
 
+    if (loginForm && resetPasswordButton) {
+      resetPasswordButton.addEventListener("click", async () => {
+        const loginEmailField = loginForm.querySelector("input[name='email']");
+        const email = String(loginEmailField?.value || "").trim().toLowerCase();
+
+        if (!email) {
+          setStatus(loginStatus, t("portalResetNeedsEmail", "Enter your email address first, then use reset password."), "error");
+          if (loginEmailField instanceof HTMLElement) {
+            loginEmailField.focus();
+          }
+          return;
+        }
+
+        if (!isValidEmail(email)) {
+          setStatus(loginStatus, t("formStatusEmail", "Please use a valid email address."), "error");
+          if (loginEmailField instanceof HTMLElement) {
+            loginEmailField.focus();
+          }
+          return;
+        }
+
+        resetPasswordButton.disabled = true;
+        try {
+          await auth.sendPasswordResetEmail(email);
+          setStatus(loginStatus, t("portalResetSent", "Password reset email sent. Check your inbox."), "success");
+        } catch (error) {
+          if (String(error?.code || "") === "auth/user-not-found") {
+            setStatus(loginStatus, t("portalResetSent", "Password reset email sent. Check your inbox."), "success");
+          } else {
+            setStatus(loginStatus, t("portalResetFailed", "Password reset could not be sent right now. Please try again."), "error");
+          }
+        } finally {
+          resetPasswordButton.disabled = false;
+        }
+      });
+    }
+
     if (signupForm) {
       const signupButton = signupForm.querySelector("button[type='submit']");
       signupForm.addEventListener("submit", async (event) => {
@@ -2482,12 +2609,7 @@
           if (loginRoleField) {
             loginRoleField.value = role;
           }
-          if (registerPanel) {
-            registerPanel.hidden = true;
-          }
-          if (registerToggle) {
-            registerToggle.setAttribute("aria-expanded", "false");
-          }
+          switchPortalView("login");
           signupForm.reset();
           setStatus(signupStatus, t("portalSignupSuccess", "Account created. You can now log in."), "success");
           setStatus(loginStatus, t("portalSignupReady", "Account created. Your login details are ready below."), "info");

@@ -10,6 +10,13 @@ This website now uses Firebase for secure portal signup/login.
 ## 2. Enable Authentication
 - Open `Authentication` -> `Sign-in method`.
 - Enable `Email/Password`.
+- Open `Authentication` -> `Settings` -> `Authorized domains`.
+- Make sure these domains are listed when you test:
+  - `localhost`
+  - `127.0.0.1`
+  - `ishworconnects.github.io`
+  - `all-star-fc-website.web.app`
+  - `all-star-fc-website.firebaseapp.com`
 
 ## 3. Enable Firestore
 - Open `Firestore Database`.
