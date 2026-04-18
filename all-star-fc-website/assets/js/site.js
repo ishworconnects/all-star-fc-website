@@ -2266,18 +2266,79 @@
       return String(fields?.[key]?.stringValue || "").trim();
     }
 
-    async function writeProfileDocument(user, profile) {
-      const token = await user.getIdToken(true);
+    function normalizeFirestoreError(error, mode) {
+      const rawCode = String(error?.code || "").toLowerCase();
+      if (
+        rawCode === "permission-denied" ||
+        rawCode === "firestore/permission-denied" ||
+        rawCode === "auth/insufficient-permission"
+      ) {
+        const permissionError = new Error(`portal_profile_${mode}_permission_denied`);
+        permissionError.code = "firestore/permission-denied";
+        return permissionError;
+      }
+
+      if (rawCode.startsWith("firestore/")) {
+        return error;
+      }
+
+      const fallbackError = new Error(`portal_profile_${mode}_failed`);
+      fallbackError.code = `firestore/${mode}-failed`;
+      return fallbackError;
+    }
+
+    function buildStoredProfile(user, profile, options = {}) {
       const now = new Date().toISOString();
-      const payload = {
+      const createdAt = String(profile.createdAt || profile.registrationSubmittedAt || now);
+      const storedProfile = {
+        uid: String(user?.uid || ""),
+        name: String(profile.name || "").trim(),
+        email: String(profile.email || "").trim().toLowerCase(),
+        role: String(profile.role || "").trim().toLowerCase(),
+        createdAt,
+        updatedAt: now,
+        registrationSubmittedAt: String(profile.registrationSubmittedAt || createdAt),
+        registrationSource: String(profile.registrationSource || "website-portal"),
+        status: String(profile.status || "active"),
+        lastLoginAt: String(options.lastLoginAt || profile.lastLoginAt || now)
+      };
+
+      return storedProfile;
+    }
+
+    function buildFirestorePayload(profile) {
+      return {
         fields: {
           name: encodeFirestoreString(profile.name),
           email: encodeFirestoreString(profile.email),
           role: encodeFirestoreString(profile.role),
-          createdAt: encodeFirestoreString(profile.createdAt || now),
-          updatedAt: encodeFirestoreString(now)
+          uid: encodeFirestoreString(profile.uid),
+          createdAt: encodeFirestoreString(profile.createdAt),
+          updatedAt: encodeFirestoreString(profile.updatedAt),
+          registrationSubmittedAt: encodeFirestoreString(profile.registrationSubmittedAt),
+          registrationSource: encodeFirestoreString(profile.registrationSource),
+          status: encodeFirestoreString(profile.status),
+          lastLoginAt: encodeFirestoreString(profile.lastLoginAt)
         }
       };
+    }
+
+    async function writeProfileDocument(user, profile, options = {}) {
+      const storedProfile = buildStoredProfile(user, profile, options);
+
+      if (usersRef && typeof usersRef.doc === "function") {
+        try {
+          await usersRef.doc(user.uid).set(storedProfile, { merge: true });
+          return storedProfile;
+        } catch (error) {
+          if (typeof window.fetch !== "function") {
+            throw normalizeFirestoreError(error, "write");
+          }
+        }
+      }
+
+      const token = await user.getIdToken(true);
+      const payload = buildFirestorePayload(storedProfile);
 
       if (typeof window.fetch === "function") {
         const response = await window.fetch(profileDocumentUrl(user.uid), {
@@ -2294,19 +2355,27 @@
           error.code = response.status === 403 ? "firestore/permission-denied" : "firestore/write-failed";
           throw error;
         }
-        return;
+        return storedProfile;
       }
 
-      await usersRef.doc(user.uid).set({
-        name: profile.name,
-        email: profile.email,
-        role: profile.role,
-        createdAt: profile.createdAt || now,
-        updatedAt: now
-      }, { merge: true });
+      throw new Error("portal_profile_write_unavailable");
     }
 
     async function readProfileDocument(user) {
+      if (usersRef && typeof usersRef.doc === "function") {
+        try {
+          const profileDoc = await usersRef.doc(user.uid).get();
+          if (!profileDoc.exists) {
+            return null;
+          }
+          return profileDoc.data() || null;
+        } catch (error) {
+          if (typeof window.fetch !== "function") {
+            throw normalizeFirestoreError(error, "read");
+          }
+        }
+      }
+
       const token = await user.getIdToken(true);
 
       if (typeof window.fetch === "function") {
@@ -2332,15 +2401,15 @@
         return {
           name: decodeFirestoreString(fields, "name"),
           email: decodeFirestoreString(fields, "email"),
-          role: decodeFirestoreString(fields, "role")
+          role: decodeFirestoreString(fields, "role"),
+          status: decodeFirestoreString(fields, "status"),
+          registrationSource: decodeFirestoreString(fields, "registrationSource"),
+          registrationSubmittedAt: decodeFirestoreString(fields, "registrationSubmittedAt"),
+          lastLoginAt: decodeFirestoreString(fields, "lastLoginAt")
         };
       }
 
-      const profileDoc = await usersRef.doc(user.uid).get();
-      if (!profileDoc.exists) {
-        return null;
-      }
-      return profileDoc.data() || null;
+      throw new Error("portal_profile_read_unavailable");
     }
 
     if (signupForm) {
@@ -2393,7 +2462,13 @@
           }
 
           await user.updateProfile({ displayName: name });
-          await writeProfileDocument(user, { name, email, role });
+          await writeProfileDocument(user, {
+            name,
+            email,
+            role,
+            registrationSource: "website-portal",
+            status: "active"
+          });
 
           const loginEmailField = loginForm?.querySelector("input[name='email']") || null;
           const loginPasswordField = loginForm?.querySelector("input[name='password']") || null;
@@ -2514,6 +2589,16 @@
             setStatus(loginStatus, t("portalRoleMismatch", "This account is registered with a different role."), "error");
             return;
           }
+
+          await writeProfileDocument(user, {
+            name: String(profileData.name || user.displayName || email.split("@")[0] || "").trim(),
+            email,
+            role: savedRole,
+            createdAt: profileData.createdAt || profileData.registrationSubmittedAt || undefined,
+            registrationSubmittedAt: profileData.registrationSubmittedAt || profileData.createdAt || undefined,
+            registrationSource: profileData.registrationSource || "website-portal",
+            status: profileData.status || "active"
+          }, { lastLoginAt: new Date().toISOString() });
 
           setStatus(loginStatus, tf("portalLoginSuccess", "Login successful as {role}.", { role: roleLabel(savedRole) }), "success");
         } catch (error) {

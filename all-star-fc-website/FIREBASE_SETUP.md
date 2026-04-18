@@ -39,6 +39,8 @@ This website now uses Firebase for secure portal signup/login.
 - Open `index.html` or any site page with the header portal.
 - Create a test account and verify:
   - Signup creates Firebase Auth user
-  - Role record is saved in Firestore `club_users/{uid}`
+  - Registration profile is saved in Firestore `club_users/{uid}`
+  - Stored fields include safe profile values such as `uid`, `name`, `email`, `role`, `status`, `registrationSource`, `registrationSubmittedAt`, and `lastLoginAt`
+  - Passwords stay in Firebase Auth only and are not stored in Firestore
   - Login checks role correctly
   - If a profile document is ever missing, login restores it for the same account
