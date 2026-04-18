@@ -1352,15 +1352,45 @@ h3 {
   text-decoration: none;
 }
 
-.gallery-card-link img {
+.gallery-media-shell {
+  display: block;
+  background: #0d261a;
+}
+
+.gallery-card-link img,
+.gallery-card-link video {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
+  display: block;
+  background: #0d261a;
 }
 
 .gallery-card-link .gallery-copy {
   display: grid;
   gap: 0.45rem;
+}
+
+.media-kind-pill {
+  background: #e3f5ea;
+  color: #125d35;
+}
+
+.gallery-media-open {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 0.15rem;
+  color: #125d35;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.gallery-media-open:hover,
+.gallery-media-open:focus-visible {
+  color: #0b4324;
 }
 
 .folder-grid {

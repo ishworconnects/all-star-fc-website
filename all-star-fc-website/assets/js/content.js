@@ -359,6 +359,14 @@ window.clubContent = {
       status: "Waiting for Photos",
       description: "Dedicated archive card for upcoming memorial cup participation moments.",
       image: "assets/images/tournaments/manoj-aryal-memorial-cup/manoj-aryal-memorial-cup-placeholder.svg"
+    },
+    {
+      slug: "fc-gurkha-cup-2025",
+      name: "FC Gurkha Cup 2025",
+      date: "Winning Moments",
+      status: "Winning Moments Live",
+      description: "Dedicated photo and video archive from All Star FC's FC Gurkha Cup 2025 winning campaign.",
+      image: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-photo-1.jpg"
     }
   ],
   honours: [
@@ -378,7 +386,7 @@ window.clubContent = {
     { year: "2023", competition: "Manse Nepal Khukuri Cup, Tampere", result: "Runner-up" },
     { year: "2024", competition: "Manse Nepal Khukuri Cup, Tampere", result: "Winner" },
     { year: "2025", competition: "Himalayan Cup", result: "Runner-up" },
-    { year: "2025", competition: "Gurkha Cup", result: "Winner" }
+    { year: "2025", competition: "FC Gurkha Cup", result: "Winner" }
   ],
   galleryItems: [
     {
@@ -422,6 +430,122 @@ window.clubContent = {
       category: "Manse Nepal Cup 2024",
       caption: "Representative trophy portrait from All Star FC's Manse Nepal Cup 2024 winning day.",
       image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-6.jpg"
+    },
+    {
+      folder: "fc-gurkha-cup-2025",
+      title: "FC Gurkha Cup 2025 Winning Moment 01",
+      category: "FC Gurkha Cup 2025",
+      caption: "Winning-day photo from All Star FC's FC Gurkha Cup 2025 celebration.",
+      image: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-photo-1.jpg"
+    },
+    {
+      folder: "fc-gurkha-cup-2025",
+      title: "FC Gurkha Cup 2025 Winning Moment 02",
+      category: "FC Gurkha Cup 2025",
+      caption: "Squad highlight from All Star FC's FC Gurkha Cup 2025 winning moments.",
+      image: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-photo-2.jpg"
+    },
+    {
+      folder: "fc-gurkha-cup-2025",
+      title: "FC Gurkha Cup 2025 Winning Moment 03",
+      category: "FC Gurkha Cup 2025",
+      caption: "Supporters and squad sharing the FC Gurkha Cup 2025 winning atmosphere.",
+      image: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-photo-3.jpg"
+    },
+    {
+      folder: "fc-gurkha-cup-2025",
+      title: "FC Gurkha Cup 2025 Winning Moment 04",
+      category: "FC Gurkha Cup 2025",
+      caption: "Another winning-day photo added to the FC Gurkha Cup 2025 archive.",
+      image: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-photo-4.jpg"
+    },
+    {
+      folder: "fc-gurkha-cup-2025",
+      title: "FC Gurkha Cup 2025 Video 01",
+      category: "FC Gurkha Cup 2025",
+      caption: "Matchday celebration clip from All Star FC's FC Gurkha Cup 2025 victory.",
+      image: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-1-poster.jpg",
+      poster: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-1-poster.jpg",
+      source: "assets/media/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-1.mp4",
+      mediaType: "video",
+      mimeType: "video/mp4"
+    },
+    {
+      folder: "fc-gurkha-cup-2025",
+      title: "FC Gurkha Cup 2025 Video 02",
+      category: "FC Gurkha Cup 2025",
+      caption: "Winning-moment video added to the FC Gurkha Cup 2025 media archive.",
+      image: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-2-poster.jpg",
+      poster: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-2-poster.jpg",
+      source: "assets/media/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-2.mp4",
+      mediaType: "video",
+      mimeType: "video/mp4"
+    },
+    {
+      folder: "fc-gurkha-cup-2025",
+      title: "FC Gurkha Cup 2025 Video 03",
+      category: "FC Gurkha Cup 2025",
+      caption: "Squad reaction clip from the FC Gurkha Cup 2025 winning day.",
+      image: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-3-poster.jpg",
+      poster: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-3-poster.jpg",
+      source: "assets/media/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-3.mp4",
+      mediaType: "video",
+      mimeType: "video/mp4"
+    },
+    {
+      folder: "fc-gurkha-cup-2025",
+      title: "FC Gurkha Cup 2025 Video 04",
+      category: "FC Gurkha Cup 2025",
+      caption: "Winning-day video highlight from the FC Gurkha Cup 2025 folder.",
+      image: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-4-poster.jpg",
+      poster: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-4-poster.jpg",
+      source: "assets/media/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-4.mp4",
+      mediaType: "video",
+      mimeType: "video/mp4"
+    },
+    {
+      folder: "fc-gurkha-cup-2025",
+      title: "FC Gurkha Cup 2025 Video 05",
+      category: "FC Gurkha Cup 2025",
+      caption: "Club celebration footage from All Star FC's FC Gurkha Cup 2025 win.",
+      image: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-5-poster.jpg",
+      poster: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-5-poster.jpg",
+      source: "assets/media/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-5.mp4",
+      mediaType: "video",
+      mimeType: "video/mp4"
+    },
+    {
+      folder: "fc-gurkha-cup-2025",
+      title: "FC Gurkha Cup 2025 Video 06",
+      category: "FC Gurkha Cup 2025",
+      caption: "Short winning clip from the FC Gurkha Cup 2025 media set.",
+      image: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-6-poster.jpg",
+      poster: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-6-poster.jpg",
+      source: "assets/media/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-6.mp4",
+      mediaType: "video",
+      mimeType: "video/mp4"
+    },
+    {
+      folder: "fc-gurkha-cup-2025",
+      title: "FC Gurkha Cup 2025 Video 07",
+      category: "FC Gurkha Cup 2025",
+      caption: "Celebration footage from All Star FC's FC Gurkha Cup 2025 archive.",
+      image: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-7-poster.jpg",
+      poster: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-7-poster.jpg",
+      source: "assets/media/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-7.mp4",
+      mediaType: "video",
+      mimeType: "video/mp4"
+    },
+    {
+      folder: "fc-gurkha-cup-2025",
+      title: "FC Gurkha Cup 2025 Video 08",
+      category: "FC Gurkha Cup 2025",
+      caption: "Final video highlight from the FC Gurkha Cup 2025 winning moments set.",
+      image: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-8-poster.jpg",
+      poster: "assets/images/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-8-poster.jpg",
+      source: "assets/media/tournaments/fc-gurkha-cup-2025/fc-gurkha-cup-2025-video-8.mp4",
+      mediaType: "video",
+      mimeType: "video/mp4"
     }
   ],
   sponsors: [

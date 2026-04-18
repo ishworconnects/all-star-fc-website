@@ -306,19 +306,19 @@
     kickOffLabel: "Kick-off",
     futureTournamentVaultEyebrow: "Future Tournament Media Vault",
     futureTournamentVaultTitle: "Prepared gallery slots for every major competition.",
-    futureTournamentVaultCopy: "Photos can be added quickly after each tournament.",
-    sectionTip: "Tip: update photos from the shared content file with consistent naming.",
+    futureTournamentVaultCopy: "Photos and videos can be added quickly after each tournament.",
+    sectionTip: "Tip: update tournament media from the shared content file with consistent naming.",
     galleryHeroEyebrow: "Tournament Gallery",
     galleryHeroTitle: "Tournament folders and visual archive",
-    galleryHeroCopy: "Select a tournament folder. Photos appear after folder click.",
+    galleryHeroCopy: "Select a tournament folder. Photos and videos appear after folder click.",
     tournamentFoldersEyebrow: "Tournament Folders",
     folderTitleTemplate: "All Star FC | {name}",
     cupArchiveEyebrow: "Cup Archive",
     folderDefaultTitle: "All Star FC | Tournament Folder",
-    folderDefaultNote: "Select a folder to view photos.",
-    showingPhotosFrom: "Showing {count} photos from {name}.",
-    noPhotosFor: "No photos uploaded yet for {name}.",
-    folderCreatedCopy: "Folder created. Upload photos and they will appear automatically.",
+    folderDefaultNote: "Select a folder to view media.",
+    showingPhotosFrom: "Showing {count} media items from {name}.",
+    noPhotosFor: "No media uploaded yet for {name}.",
+    folderCreatedCopy: "Folder created. Upload media and it will appear automatically.",
     contactHeroEyebrow: "Contact and Join",
     contactHeroTitle: "Reach All Star FC from one dynamic panel.",
     contactHeroCopy: "Use the form below for player pathways, academy interest, and sponsorship.",
@@ -1412,19 +1412,64 @@
     `;
   }
 
+  function inferGalleryMediaType(item) {
+    if (item.mediaType === "video") {
+      return "video";
+    }
+    const source = String(item.source || item.image || "").toLowerCase();
+    if (source.endsWith(".mp4") || source.endsWith(".mov") || source.endsWith(".webm")) {
+      return "video";
+    }
+    return "image";
+  }
+
+  function inferVideoMimeType(source) {
+    const raw = String(source || "").toLowerCase();
+    if (raw.endsWith(".webm")) {
+      return "video/webm";
+    }
+    if (raw.endsWith(".mov")) {
+      return "video/quicktime";
+    }
+    return "video/mp4";
+  }
+
   function galleryCard(item) {
+    const mediaType = inferGalleryMediaType(item);
+    const source = item.source || item.image;
+    const poster = item.poster || item.image || tournamentFallback;
+    const isVideo = mediaType === "video";
+    const mediaLabel = isVideo ? t("videoLabel", "Video") : t("photoLabel", "Photo");
+    const openLabel = isVideo ? t("openVideo", "Open video") : t("openPhoto", "Open photo");
+    const mediaMarkup = isVideo
+      ? `
+        <div class="gallery-media-shell is-video">
+          <video controls preload="metadata" playsinline poster="${poster}" aria-label="${item.title}">
+            <source src="${source}" type="${item.mimeType || inferVideoMimeType(source)}">
+            ${t("videoFallback", "Your browser does not support embedded video playback.")}
+          </video>
+        </div>
+      `
+      : `
+        <a class="gallery-media-shell" href="${source}" target="_blank" rel="noopener noreferrer" aria-label="${tf("openFullPhoto", `Open full photo: ${item.title}`, { title: item.title })}">
+          <img src="${source}" alt="${item.title}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/images/tournament-placeholder.svg'">
+        </a>
+      `;
+
     return `
       <article class="gallery-card" data-gallery-card data-category="${item.category}">
-        <a class="gallery-card-link" href="${item.image}" target="_blank" rel="noopener noreferrer" aria-label="${tf("openFullPhoto", `Open full photo: ${item.title}`, { title: item.title })}">
-          <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/images/tournament-placeholder.svg'">
+        <div class="gallery-card-link">
+          ${mediaMarkup}
           <div class="gallery-copy">
             <div class="card-topline">
               <span class="pill">${item.category}</span>
+              <span class="pill media-kind-pill">${mediaLabel}</span>
             </div>
             <h3>${item.title}</h3>
             <p>${item.caption}</p>
+            <a class="gallery-media-open" href="${source}" target="_blank" rel="noopener noreferrer">${openLabel}</a>
           </div>
-        </a>
+        </div>
       </article>
     `;
   }
@@ -1459,6 +1504,12 @@
     }
     if (raw.includes("himalayan")) {
       return "himalayan-cup";
+    }
+    if ((raw.includes("gurka") || raw.includes("gurkha")) && raw.includes("2025")) {
+      return "fc-gurkha-cup-2025";
+    }
+    if (raw.includes("fc gurkha")) {
+      return "fc-gurkha-cup-2025";
     }
     if (raw.includes("gurka") || raw.includes("gurkha")) {
       return "gurka-cup-2026";
@@ -1712,15 +1763,15 @@
       const folderPhotos = photosByFolder.filter((item) => item.folder === selectedFolder.slug);
       folderTitle.textContent = tf("folderTitleTemplate", "All Star FC | {name}", { name: selectedFolder.name });
       folderNote.textContent = folderPhotos.length
-        ? tf("showingPhotosFrom", `Showing ${folderPhotos.length} photo${folderPhotos.length > 1 ? "s" : ""} from ${selectedFolder.name}.`, { count: folderPhotos.length, name: selectedFolder.name })
-        : tf("noPhotosFor", `No photos uploaded yet for ${selectedFolder.name}.`, { name: selectedFolder.name });
+        ? tf("showingPhotosFrom", `Showing ${folderPhotos.length} media item${folderPhotos.length > 1 ? "s" : ""} from ${selectedFolder.name}.`, { count: folderPhotos.length, name: selectedFolder.name })
+        : tf("noPhotosFor", `No media uploaded yet for ${selectedFolder.name}.`, { name: selectedFolder.name });
 
       galleryGrid.innerHTML = folderPhotos.length
         ? folderPhotos.map((item) => galleryCard(item)).join("")
         : `
           <article class="info-card gallery-empty-card">
             <h3>${selectedFolder.name}</h3>
-            <p>${t("folderCreatedCopy", "Folder created. Upload photos for this tournament and they will appear here automatically.")}</p>
+            <p>${t("folderCreatedCopy", "Folder created. Upload media for this tournament and it will appear here automatically.")}</p>
           </article>
         `;
       setupInteractiveCards(galleryGrid);
@@ -2830,11 +2881,11 @@
 
       <section class="content-section tint-section">
         <div class="section-shell">
-          ${sectionHeading(t("futureTournamentVaultEyebrow", "Future tournament media vault"), t("futureTournamentVaultTitle", "Prepared gallery slots for every major competition."), t("futureTournamentVaultCopy", "Once each tournament is played, photos can be added quickly without redesigning the site."))}
+          ${sectionHeading(t("futureTournamentVaultEyebrow", "Future tournament media vault"), t("futureTournamentVaultTitle", "Prepared gallery slots for every major competition."), t("futureTournamentVaultCopy", "Once each tournament is played, photos and videos can be added quickly without redesigning the site."))}
           <div class="card-grid three-up future-grid">
             ${futureSlots.map((slot) => futureTournamentCard(slot)).join("")}
           </div>
-          <p class="section-note">${t("sectionTip", "Tip: upload tournament photos with consistent names and replace the placeholder slots from the shared content file.")}</p>
+          <p class="section-note">${t("sectionTip", "Tip: upload tournament media with consistent names and replace the placeholder slots from the shared content file.")}</p>
         </div>
       </section>
     `;
@@ -2852,13 +2903,13 @@
         <div class="section-shell">
           <p class="eyebrow">${t("galleryHeroEyebrow", "Tournament gallery")}</p>
           <h1>${t("galleryHeroTitle", "Tournament folders and visual archive")}</h1>
-          <p>${t("galleryHeroCopy", "Select a tournament folder. Photos appear only after clicking the folder name.")}</p>
+          <p>${t("galleryHeroCopy", "Select a tournament folder. Photos and videos appear only after clicking the folder name.")}</p>
         </div>
       </section>
 
       <section class="content-section">
         <div class="section-shell">
-          ${sectionHeading(t("tournamentFoldersEyebrow", "Tournament folders"), t("tournamentFoldersTitle", "Click Manse Nepal folder to open Manse photos."), "")}
+          ${sectionHeading(t("tournamentFoldersEyebrow", "Tournament folders"), t("tournamentFoldersTitle", "Click a tournament folder to open its media."), "")}
           <div class="folder-grid">
             ${folders.map((folder) => `
               <button class="folder-card" type="button" data-gallery-folder="${folder.slug}" aria-label="${tf("openFolder", `Open ${folder.name} folder`, { name: folder.name })}">
@@ -2878,7 +2929,7 @@
           <div class="section-heading">
             <p class="eyebrow">${t("cupArchiveEyebrow", "Cup archive")}</p>
             <h2 data-folder-title>${t("folderDefaultTitle", "All Star FC | Tournament Folder")}</h2>
-            <p data-folder-note>${t("folderDefaultNote", "Select a folder to view photos.")}</p>
+            <p data-folder-note>${t("folderDefaultNote", "Select a folder to view media.")}</p>
           </div>
           <div class="gallery-grid manse-grid" data-gallery-grid></div>
         </div>
