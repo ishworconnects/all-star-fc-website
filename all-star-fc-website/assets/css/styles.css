@@ -3566,3 +3566,310 @@ body.lightbox-open {
     flex-direction: column;
   }
 }
+
+/* ============================================================
+   Session chip (signed-in state in header) + manager dashboard
+   Added 2026-04-19
+   ============================================================ */
+
+.session-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.3rem 0.55rem 0.3rem 0.35rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  color: inherit;
+  font-size: 0.78rem;
+  line-height: 1.1;
+}
+.session-chip[hidden] { display: none; }
+.session-chip-avatar {
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: #c8102e;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.session-chip-meta {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.session-chip-name { font-size: 0.8rem; }
+.session-chip-role {
+  font-size: 0.68rem;
+  opacity: 0.75;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.session-chip-link {
+  font-size: 0.72rem;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+.session-chip-signout {
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.72rem;
+  cursor: pointer;
+  color: inherit;
+}
+.session-chip-signout:hover { background: rgba(255,255,255,0.12); }
+
+/* Manager dashboard */
+.dashboard-section { padding: 3rem 0 4rem; }
+.dashboard-shell { display: flex; flex-direction: column; gap: 1.5rem; }
+.dashboard-header { max-width: 780px; }
+.dashboard-header h1 { margin: 0.25rem 0 0.5rem; }
+.dashboard-intro { color: #444; font-size: 0.95rem; }
+.dashboard-state { min-height: 140px; }
+.dashboard-loading { font-style: italic; color: #555; }
+.dashboard-empty {
+  padding: 2rem;
+  border: 1px dashed rgba(0,0,0,0.18);
+  border-radius: 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  align-items: center;
+}
+.dashboard-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+}
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.dashboard-table th,
+.dashboard-table td {
+  text-align: left;
+  padding: 0.75rem 0.9rem;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  vertical-align: middle;
+}
+.dashboard-table th {
+  background: #f6f6f6;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #444;
+}
+.dashboard-table tbody tr:last-child td { border-bottom: 0; }
+.dashboard-email { color: #666; font-size: 0.8rem; }
+.dashboard-table select {
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 6px;
+  background: #fff;
+  font-size: 0.85rem;
+}
+.dashboard-badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.dashboard-badge.is-active    { background: rgba(32,160,80,0.15);  color: #176b34; }
+.dashboard-badge.is-pending   { background: rgba(230,165,30,0.2);  color: #8a5a00; }
+.dashboard-badge.is-suspended { background: rgba(200,16,46,0.15);  color: #8a0e20; }
+.button-small {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+/* ============================================================
+   Gallery folder improvements — closed-until-clicked behaviour
+   Added 2026-04-19
+   ============================================================ */
+
+.folder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.1rem;
+}
+
+.folder-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  color: inherit;
+}
+.folder-card:hover,
+.folder-card:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.10);
+  border-color: rgba(200, 16, 46, 0.35);
+  outline: none;
+}
+.folder-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.85) brightness(0.96);
+  transition: filter 0.25s ease, transform 0.25s ease;
+}
+.folder-card:hover img,
+.folder-card:focus-visible img {
+  filter: none;
+  transform: scale(1.03);
+}
+.folder-card-icon {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #c8102e;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  z-index: 2;
+}
+.folder-card-icon svg { width: 1.2rem; height: 1.2rem; }
+.folder-card-body {
+  padding: 0.85rem 1rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.folder-card-name { font-weight: 600; font-size: 0.98rem; margin: 0; }
+.folder-card-status {
+  font-size: 0.78rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+.folder-card-cta {
+  display: block;
+  padding: 0.45rem 1rem 0.85rem;
+  font-size: 0.78rem;
+  color: #c8102e;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-top: 1px dashed rgba(0, 0, 0, 0.08);
+}
+.folder-card.is-active {
+  border-color: #c8102e;
+  box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.18), 0 12px 22px rgba(0, 0, 0, 0.1);
+}
+.folder-card.is-active .folder-card-cta::before {
+  content: "\2715\00a0"; /* × */
+}
+.folder-card.is-active .folder-card-cta {
+  color: #fff;
+  background: #c8102e;
+  border-top-color: transparent;
+}
+
+/* Folder view (the panel that only shows when a folder is open) */
+[data-folder-view] {
+  transition: background 0.3s ease;
+}
+[data-folder-view][data-folder-open="false"] .folder-view-open { display: none; }
+[data-folder-view][data-folder-open="true"]  .folder-view-empty { display: none; }
+
+.folder-view-empty {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+.folder-empty-illustration {
+  width: 96px;
+  height: 96px;
+  color: #c8102e;
+  opacity: 0.8;
+}
+.folder-empty-illustration svg { width: 100%; height: 100%; }
+.folder-view-empty h2 { margin: 0.25rem 0 0; font-size: 1.35rem; }
+.folder-view-empty p  { margin: 0; color: #555; }
+
+.folder-view-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.folder-view-header h2 { margin: 0.2rem 0 0.35rem; }
+.folder-view-note { margin: 0; color: #555; max-width: 52ch; }
+
+.folder-close-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #222;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.folder-close-button:hover,
+.folder-close-button:focus-visible {
+  background: #c8102e;
+  color: #fff;
+  border-color: #c8102e;
+  outline: none;
+}
+.folder-close-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+  display: inline-block;
+  transform: translateY(-1px);
+}
+
+/* Smooth-reveal for the opened folder grid */
+[data-folder-view][data-folder-open="true"] .gallery-grid {
+  animation: folderReveal 0.35s ease both;
+}
+@keyframes folderReveal {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 700px) {
+  .folder-view-header { flex-direction: column; align-items: stretch; }
+  .folder-close-button { align-self: flex-start; }
+}

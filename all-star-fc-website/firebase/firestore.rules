@@ -2,15 +2,43 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Helper: is the current caller a manager (active) in club_users?
+    function isManager() {
+      return request.auth != null
+             && exists(/databases/$(database)/documents/club_users/$(request.auth.uid))
+             && get(/databases/$(database)/documents/club_users/$(request.auth.uid)).data.role == "manager"
+             && get(/databases/$(database)/documents/club_users/$(request.auth.uid)).data.status == "active";
+    }
+
     match /club_users/{userId} {
+
+      // A new user creates their OWN profile doc at signup.
       allow create: if request.auth != null
                     && request.auth.uid == userId
                     && request.resource.data.email == request.auth.token.email
-                    && request.resource.data.role in ["manager", "player", "member"];
+                    && request.resource.data.role in ["manager", "player", "member"]
+                    && request.resource.data.status in ["active", "pending", "suspended"];
 
-      allow read, update: if request.auth != null
-                          && request.auth.uid == userId;
+      // Read your own profile, OR any profile if you are a manager.
+      allow read: if request.auth != null
+                  && (request.auth.uid == userId || isManager());
 
+      // Update your own profile (non-sensitive fields),
+      // OR update any profile if you are a manager.
+      // Managers can flip role/status to manage the roster.
+      allow update: if request.auth != null
+                    && (
+                      (request.auth.uid == userId
+                        && request.resource.data.email == resource.data.email
+                        && request.resource.data.uid == resource.data.uid)
+                      || isManager()
+                    )
+                    && request.resource.data.role in ["manager", "player", "member"]
+                    && request.resource.data.status in ["active", "pending", "suspended"];
+
+      // Nobody deletes profile docs from the client. Managers can suspend
+      // instead by setting status = "suspended".
       allow delete: if false;
     }
   }

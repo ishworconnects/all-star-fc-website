@@ -11,6 +11,7 @@ window.allStarFirebaseConfig = (() => {
     profileCollection: "club_users",
     managerAllowlist: [
       "allstarfc.helsinki@gmail.com",
+      "ishwor.kunwor93@gmail.com",
       "ishwor.kunwor1993@gmail.com",
       "ishwor.kunwor13@gmail.com",
       "ishworxptr@gmail.com"

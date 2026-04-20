@@ -175,6 +175,10 @@
     cupArchiveEyebrow: "Cup-arkisto",
     folderDefaultTitle: "All Star FC | Turnauskansio",
     folderDefaultNote: "Valitse kansio kuvia varten.",
+    folderPromptTitle: "Yhtakaan kansiota ei ole auki",
+    folderPromptCopy: "Klikkaa yllaa olevaa turnauskansiota nahdaksesi sen kuvat ja videot. Sulje kansio piilottaaksesi media.",
+    clickToOpen: "Klikkaa avataksesi",
+    closeFolder: "Sulje kansio",
     showingPhotosFrom: "Naytetaan {count} kuvaa turnauksesta {name}.",
     noPhotosFor: "Turnaukselle {name} ei ole viela lisatty kuvia.",
     folderCreatedCopy: "Kansio on valmis. Lataa turnauskuvat ja ne ilmestyvat automaattisesti.",
@@ -316,6 +320,10 @@
     cupArchiveEyebrow: "Cup Archive",
     folderDefaultTitle: "All Star FC | Tournament Folder",
     folderDefaultNote: "Select a folder to view media.",
+    folderPromptTitle: "No folder opened yet",
+    folderPromptCopy: "Click any tournament folder above to reveal its photos and videos. Close the folder to hide the media again.",
+    clickToOpen: "Click to open",
+    closeFolder: "Close folder",
     showingPhotosFrom: "Showing {count} media items from {name}.",
     noPhotosFor: "No media uploaded yet for {name}.",
     folderCreatedCopy: "Folder created. Upload media and it will appear automatically.",
@@ -570,6 +578,10 @@
     cupArchiveEyebrow: "कप अभिलेख",
     folderDefaultTitle: "All Star FC | Tournament Folder",
     folderDefaultNote: "फोटो हेर्न फोल्डर चयन गर्नुहोस्।",
+    folderPromptTitle: "कुनै पनि फोल्डर खोलिएको छैन",
+    folderPromptCopy: "फोटो र भिडियो हेर्न माथिको कुनै पनि टुर्नामेन्ट फोल्डर क्लिक गर्नुहोस्। मिडिया फेरि लुकाउन फोल्डर बन्द गर्नुहोस्।",
+    clickToOpen: "खोल्न क्लिक गर्नुहोस्",
+    closeFolder: "फोल्डर बन्द गर्नुहोस्",
     showingPhotosFrom: "{name} बाट {count} फोटो देखाइँदैछ।",
     noPhotosFor: "{name} का लागि अझै फोटो अपलोड गरिएको छैन।",
     folderCreatedCopy: "फोल्डर तयार छ। फोटो अपलोड गरेपछि यहाँ स्वतः देखिन्छ।",
@@ -1097,7 +1109,7 @@
             `).join("")}
           </div>
           <div class="utility-links utility-right utility-socials" aria-label="${t("clubSocialLinks", "Club social links")}">
-            <div class="auth-launch-group" role="group" aria-label="${t("portalAccess", "Sign in / Sign up")}">
+            <div class="auth-launch-group" role="group" aria-label="${t("portalAccess", "Sign in / Sign up")}" data-auth-launch-group>
               <button class="auth-launch-button is-login" type="button" data-auth-launch data-auth-view="login" aria-haspopup="dialog" aria-expanded="false">
                 <span class="auth-launch-icon" aria-hidden="true">${portalAccessIcon()}</span>
                 <span class="auth-launch-label">${t("portalLoginTitle", "Log in")}</span>
@@ -1106,6 +1118,7 @@
                 <span class="auth-launch-label">${t("portalSignupTitle", "Register")}</span>
               </button>
             </div>
+            <div class="session-chip" data-session-chip hidden></div>
             ${localized.clubMeta.socialLinks.map((social) => `
               <a class="social-logo-link" href="${social.href}" target="_blank" rel="noreferrer" aria-label="${social.label}">
                 ${socialIcon(social.label)}
@@ -1187,8 +1200,9 @@
                     <input type="password" name="password" autocomplete="current-password" minlength="6" placeholder="${t("portalPasswordPlaceholder", "Password")}" required>
                   </label>
                   <label class="form-field portal-role-field">
-                    <span>${t("roleField", "Role *")}</span>
-                    <select name="role" required>
+                    <span>${t("roleField", "Role")}</span>
+                    <select name="role">
+                      <option value="">${t("roleAutoDetect", "Auto-detect (use my saved role)")}</option>
                       <option value="manager">${t("roleManager", "Manager")}</option>
                       <option value="player">${t("rolePlayer", "Player")}</option>
                       <option value="member">${t("roleMember", "Member")}</option>
@@ -1196,7 +1210,7 @@
                   </label>
                   <div class="portal-inline-actions">
                     <button class="portal-text-link" type="button" data-reset-password>${t("portalForgotPassword", "Forgotten password?")}</button>
-                    <span class="portal-inline-hint">${t("portalRoleHelper", "Choose the same role you used when registering.")}</span>
+                    <span class="portal-inline-hint">${t("portalRoleHelperAuto", "Leave on Auto-detect to use the role you registered with.")}</span>
                   </div>
                   <div class="form-actions">
                     <button class="portal-action-button" type="submit">${t("portalLoginTitle", "Log in")}</button>
@@ -1801,7 +1815,11 @@
     const galleryGrid = root.querySelector("[data-gallery-grid]");
     const folderTitle = root.querySelector("[data-folder-title]");
     const folderNote = root.querySelector("[data-folder-note]");
-    if (!folderButtons.length || !galleryGrid || !folderTitle || !folderNote) {
+    const folderView = root.querySelector("[data-folder-view]");
+    const folderEmpty = root.querySelector("[data-folder-empty]");
+    const folderOpenPanel = root.querySelector("[data-folder-open-panel]");
+    const folderCloseButton = root.querySelector("[data-folder-close]");
+    if (!folderButtons.length || !galleryGrid || !folderTitle || !folderNote || !folderView || !folderEmpty || !folderOpenPanel) {
       return;
     }
 
@@ -1816,20 +1834,61 @@
       folder: item.folder || inferFolderSlug(item.category || item.title)
     }));
 
-    function renderFolder(folderSlug, updateUrl = true) {
-      const selectedFolder = folderMeta.find((folder) => folder.slug === folderSlug) || folderMeta[0];
+    let activeFolderSlug = "";
+
+    function syncUrl(folderSlug) {
+      const nextUrl = new URL(window.location.href);
+      if (folderSlug) {
+        nextUrl.searchParams.set("folder", folderSlug);
+      } else {
+        nextUrl.searchParams.delete("folder");
+      }
+      window.history.replaceState({}, "", `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`);
+    }
+
+    function closeFolder({ updateUrl = true, focusFirst = false } = {}) {
+      activeFolderSlug = "";
+      folderView.dataset.folderOpen = "false";
+      folderEmpty.hidden = false;
+      folderOpenPanel.hidden = true;
+      galleryGrid.innerHTML = "";
+      folderButtons.forEach((button) => {
+        button.classList.remove("is-active");
+        button.setAttribute("aria-expanded", "false");
+      });
+      if (updateUrl) {
+        syncUrl("");
+      }
+      if (focusFirst && folderButtons[0]) {
+        folderButtons[0].focus();
+      }
+    }
+
+    function openFolder(folderSlug, { updateUrl = true, scrollIntoView = true } = {}) {
+      const selectedFolder = folderMeta.find((folder) => folder.slug === folderSlug);
       if (!selectedFolder) {
         return;
       }
 
+      activeFolderSlug = selectedFolder.slug;
+      folderView.dataset.folderOpen = "true";
+      folderEmpty.hidden = true;
+      folderOpenPanel.hidden = false;
+
       folderButtons.forEach((button) => {
-        button.classList.toggle("is-active", button.dataset.galleryFolder === selectedFolder.slug);
+        const isActive = button.dataset.galleryFolder === selectedFolder.slug;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-expanded", String(isActive));
       });
 
       const folderPhotos = photosByFolder.filter((item) => item.folder === selectedFolder.slug);
       folderTitle.textContent = tf("folderTitleTemplate", "All Star FC | {name}", { name: selectedFolder.name });
       folderNote.textContent = folderPhotos.length
-        ? tf("showingPhotosFrom", `Showing ${folderPhotos.length} media item${folderPhotos.length > 1 ? "s" : ""} from ${selectedFolder.name}.`, { count: folderPhotos.length, name: selectedFolder.name })
+        ? tf(
+            "showingPhotosFrom",
+            `Showing ${folderPhotos.length} media item${folderPhotos.length > 1 ? "s" : ""} from ${selectedFolder.name}.`,
+            { count: folderPhotos.length, name: selectedFolder.name }
+          )
         : tf("noPhotosFor", `No media uploaded yet for ${selectedFolder.name}.`, { name: selectedFolder.name });
 
       galleryGrid.innerHTML = folderPhotos.length
@@ -1843,24 +1902,62 @@
       setupInteractiveCards(galleryGrid);
 
       if (updateUrl) {
-        const nextUrl = new URL(window.location.href);
-        nextUrl.searchParams.set("folder", selectedFolder.slug);
-        window.history.replaceState({}, "", `${nextUrl.pathname}${nextUrl.search}`);
+        syncUrl(selectedFolder.slug);
+      }
+
+      if (scrollIntoView) {
+        try {
+          folderView.scrollIntoView({ behavior: "smooth", block: "start" });
+        } catch (_) {
+          folderView.scrollIntoView();
+        }
+      }
+
+      if (folderCloseButton instanceof HTMLElement) {
+        folderCloseButton.focus({ preventScroll: true });
       }
     }
 
     folderButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        renderFolder(button.dataset.galleryFolder || "", true);
+        const slug = button.dataset.galleryFolder || "";
+        if (!slug) return;
+        // Toggle: clicking the active folder closes it.
+        if (slug === activeFolderSlug) {
+          closeFolder({ updateUrl: true, focusFirst: false });
+          button.focus({ preventScroll: true });
+          return;
+        }
+        openFolder(slug, { updateUrl: true, scrollIntoView: true });
       });
     });
 
+    if (folderCloseButton) {
+      folderCloseButton.addEventListener("click", () => {
+        closeFolder({ updateUrl: true, focusFirst: true });
+      });
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && activeFolderSlug) {
+        closeFolder({ updateUrl: true, focusFirst: true });
+      }
+    });
+
+    // Only open a folder on load if the URL explicitly asks for one
+    // (e.g. a deep link from another page like the Home preview).
+    // Otherwise the gallery starts fully closed — photos hidden until click.
     const folderFromQuery = new URLSearchParams(window.location.search).get("folder");
-    const hasQueryFolder = folderFromQuery && folderMeta.some((folder) => folder.slug === folderFromQuery);
-    const defaultFolder = hasQueryFolder
-      ? folderFromQuery
-      : (folderMeta.find((folder) => photosByFolder.some((photo) => photo.folder === folder.slug)) || folderMeta[0])?.slug;
-    renderFolder(defaultFolder || "", false);
+    const hashRequest = String(window.location.hash || "").toLowerCase();
+    const wantsExplicitOpen = folderFromQuery && folderMeta.some((folder) => folder.slug === folderFromQuery);
+    if (wantsExplicitOpen) {
+      // Don't smooth-scroll on initial load if user came from an in-page anchor;
+      // anchor handling will already place them in the right region.
+      const shouldScroll = hashRequest === "#gallery-folder-view";
+      openFolder(folderFromQuery, { updateUrl: false, scrollIntoView: shouldScroll });
+    } else {
+      closeFolder({ updateUrl: false, focusFirst: false });
+    }
   }
 
   function setupScrollProgress() {
@@ -2344,6 +2441,39 @@
     const usersRef = db.collection(profileCollection);
     const firestoreBaseUrl = `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(String(window.allStarFirebaseConfig?.projectId || ""))}/databases/(default)/documents`;
 
+    // Expose a small portal API so other modules (dashboard, header chip)
+    // can read the current session and subscribe to changes.
+    const portalListeners = new Set();
+    window.allStarPortal = window.allStarPortal || {
+      currentSession: null,
+      auth,
+      db,
+      usersRef,
+      profileCollection,
+      managerAllowlist,
+      readProfile: null, // filled in below once readProfileDocument is defined
+      onSessionChange(listener) {
+        if (typeof listener !== "function") {
+          return () => {};
+        }
+        portalListeners.add(listener);
+        try { listener(window.allStarPortal.currentSession); } catch (_) { /* noop */ }
+        return () => portalListeners.delete(listener);
+      },
+      async signOut() {
+        try { await auth.signOut(); } catch (_) { /* noop */ }
+      }
+    };
+    function notifyPortalSession(session) {
+      window.allStarPortal.currentSession = session;
+      portalListeners.forEach((listener) => {
+        try { listener(session); } catch (_) { /* noop */ }
+      });
+      try {
+        window.dispatchEvent(new CustomEvent("allstar:session", { detail: session }));
+      } catch (_) { /* noop */ }
+    }
+
     function profileDocumentUrl(uid) {
       return `${firestoreBaseUrl}/${encodeURIComponent(profileCollection)}/${encodeURIComponent(uid)}`;
     }
@@ -2502,6 +2632,25 @@
       throw new Error("portal_profile_read_unavailable");
     }
 
+    // Wire the portal API helpers now that the read/write functions exist.
+    window.allStarPortal.readProfile = readProfileDocument;
+    window.allStarPortal.writeProfile = writeProfileDocument;
+
+    // Keep the session in sync across page loads and on sign-out.
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        notifyPortalSession(null);
+        return;
+      }
+      try {
+        const profile = await readProfileDocument(user);
+        notifyPortalSession({ user, profile: profile || null });
+      } catch (error) {
+        // If we can't read the profile (e.g. rules blocked it), still surface the auth user.
+        notifyPortalSession({ user, profile: null, profileError: String(error?.code || error?.message || error) });
+      }
+    });
+
     if (loginForm && resetPasswordButton) {
       resetPasswordButton.addEventListener("click", async () => {
         const loginEmailField = loginForm.querySelector("input[name='email']");
@@ -2589,13 +2738,14 @@
           }
 
           await user.updateProfile({ displayName: name });
-          await writeProfileDocument(user, {
+          const createdProfile = await writeProfileDocument(user, {
             name,
             email,
             role,
             registrationSource: "website-portal",
             status: "active"
           });
+          notifyPortalSession({ user, profile: createdProfile });
 
           const loginEmailField = loginForm?.querySelector("input[name='email']") || null;
           const loginPasswordField = loginForm?.querySelector("input[name='password']") || null;
@@ -2657,7 +2807,7 @@
         const role = String(data.get("role") || "").trim().toLowerCase();
         const password = String(data.get("password") || "");
 
-        if (!email || !role || !password) {
+        if (!email || !password) {
           setStatus(loginStatus, t("portalMissingFields", "Please fill in all required fields."), "error");
           return;
         }
@@ -2681,16 +2831,18 @@
 
           const profileData = await readProfileDocument(user);
           if (!profileData) {
-            if (role === "manager" && managerAllowlist.length && !managerAllowlist.includes(email)) {
+            // No profile doc yet. Recover it using the selected role, or default to "member".
+            const recoveryRole = role || "member";
+            if (recoveryRole === "manager" && managerAllowlist.length && !managerAllowlist.includes(email)) {
               await auth.signOut();
               setStatus(loginStatus, t("portalManagerRestricted", "Manager signup is restricted. Use an approved manager email."), "error");
               return;
             }
 
-            await writeProfileDocument(user, {
+            const recoveredProfile = await writeProfileDocument(user, {
               name: String(user.displayName || email.split("@")[0] || "").trim(),
               email,
-              role
+              role: recoveryRole
             });
 
             setStatus(
@@ -2698,21 +2850,29 @@
               tf(
                 "portalRecoveredProfile",
                 "Login successful as {role}. Your profile was restored.",
-                { role: roleLabel(role) }
+                { role: roleLabel(recoveryRole) }
               ),
               "success"
             );
+            notifyPortalSession({ user, profile: recoveredProfile });
             return;
           }
 
           const savedRole = String(profileData.role || "").trim().toLowerCase();
-          if (!savedRole || savedRole !== role) {
+          if (!savedRole) {
             await auth.signOut();
-            setStatus(loginStatus, t("portalRoleMismatch", "This account is registered with a different role."), "error");
+            setStatus(loginStatus, t("portalRoleNotFound", "No role profile found for this account. Please contact a club admin."), "error");
+            return;
+          }
+          // Role mismatch ONLY if the user explicitly picked a specific role
+          // that doesn't match. Blank / auto-detect falls through to savedRole.
+          if (role && savedRole !== role) {
+            await auth.signOut();
+            setStatus(loginStatus, t("portalRoleMismatch", "This account is registered with a different role. Try 'Auto-detect' on the Role field."), "error");
             return;
           }
 
-          await writeProfileDocument(user, {
+          const updatedProfile = await writeProfileDocument(user, {
             name: String(profileData.name || user.displayName || email.split("@")[0] || "").trim(),
             email,
             role: savedRole,
@@ -2723,6 +2883,7 @@
           }, { lastLoginAt: new Date().toISOString() });
 
           setStatus(loginStatus, tf("portalLoginSuccess", "Login successful as {role}.", { role: roleLabel(savedRole) }), "success");
+          notifyPortalSession({ user, profile: updatedProfile });
         } catch (error) {
           setStatus(loginStatus, mapAuthError(error, "login"), "error");
         } finally {
@@ -3117,28 +3278,54 @@
       <section class="content-section">
         <div class="section-shell">
           ${sectionHeading(t("tournamentFoldersEyebrow", "Tournament folders"), t("tournamentFoldersTitle", "Click a tournament folder to open its media."), "")}
-          <div class="folder-grid">
+          <div class="folder-grid" data-folder-grid role="list">
             ${folders.map((folder) => `
-              <button class="folder-card" type="button" data-gallery-folder="${folder.slug}" aria-label="${tf("openFolder", `Open ${folder.name} folder`, { name: folder.name })}">
-                <img src="${folder.image}" alt="${folder.name}">
+              <button class="folder-card" type="button" data-gallery-folder="${folder.slug}" aria-expanded="false" aria-controls="gallery-folder-view" aria-label="${tf("openFolder", `Open ${folder.name} folder`, { name: folder.name })}">
+                <span class="folder-card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M4 6.5A1.5 1.5 0 0 1 5.5 5h4.17c.4 0 .78.16 1.06.44L12 6.5h6.5A1.5 1.5 0 0 1 20 8v10a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18V6.5Z" fill="currentColor" opacity=".12"></path>
+                    <path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h4.17c.4 0 .78.16 1.06.44L12 8.5h6.5A1.5 1.5 0 0 1 20 10v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18V8.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path>
+                  </svg>
+                </span>
+                <img src="${folder.image}" alt="" aria-hidden="true" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/images/tournament-placeholder.svg'">
                 <div class="folder-card-body">
                   <p class="folder-card-name">${folder.name}</p>
                   <p class="folder-card-status">${folder.status}</p>
                 </div>
+                <span class="folder-card-cta" aria-hidden="true">${t("clickToOpen", "Click to open")}</span>
               </button>
             `).join("")}
           </div>
         </div>
       </section>
 
-      <section class="content-section tint-section">
-        <div class="section-shell" id="gallery-folder-view">
-          <div class="section-heading">
-            <p class="eyebrow">${t("cupArchiveEyebrow", "Cup archive")}</p>
-            <h2 data-folder-title>${t("folderDefaultTitle", "All Star FC | Tournament Folder")}</h2>
-            <p data-folder-note>${t("folderDefaultNote", "Select a folder to view media.")}</p>
+      <section class="content-section tint-section" id="gallery-folder-view" data-folder-view data-folder-open="false">
+        <div class="section-shell">
+          <div class="folder-view-empty" data-folder-empty>
+            <div class="folder-empty-illustration" aria-hidden="true">
+              <svg viewBox="0 0 64 64" focusable="false">
+                <path d="M8 17a4 4 0 0 1 4-4h14l6 6h20a4 4 0 0 1 4 4v24a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4V17Z" fill="currentColor" opacity=".10"></path>
+                <path d="M8 17a4 4 0 0 1 4-4h14l6 6h20a4 4 0 0 1 4 4v24a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4V17Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+            <h2>${t("folderPromptTitle", "No folder opened yet")}</h2>
+            <p>${t("folderPromptCopy", "Click any tournament folder above to reveal its photos and videos. Close the folder to hide the media again.")}</p>
           </div>
-          <div class="gallery-grid manse-grid" data-gallery-grid></div>
+
+          <div class="folder-view-open" data-folder-open-panel hidden>
+            <div class="folder-view-header">
+              <div>
+                <p class="eyebrow" data-folder-eyebrow>${t("cupArchiveEyebrow", "Cup archive")}</p>
+                <h2 data-folder-title>${t("folderDefaultTitle", "All Star FC | Tournament Folder")}</h2>
+                <p class="folder-view-note" data-folder-note>${t("folderDefaultNote", "Select a folder to view media.")}</p>
+              </div>
+              <button class="folder-close-button" type="button" data-folder-close aria-label="${t("closeFolder", "Close folder")}">
+                <span class="folder-close-icon" aria-hidden="true">&times;</span>
+                <span>${t("closeFolder", "Close folder")}</span>
+              </button>
+            </div>
+            <div class="gallery-grid manse-grid" data-gallery-grid></div>
+          </div>
         </div>
       </section>
     `;
@@ -3372,6 +3559,202 @@
     setupMembershipForms();
   }
 
+  function renderDashboard() {
+    const loadingMsg = t("dashboardLoading", "Loading your club account...");
+    const signInMsg = t("dashboardNotSignedIn", "Please sign in to open the manager dashboard.");
+    const notAllowedMsg = t("dashboardNotAllowed", "Only users with the Manager role can access this dashboard.");
+
+    root.innerHTML = `
+      <section class="dashboard-section">
+        <div class="section-shell dashboard-shell">
+          <header class="dashboard-header">
+            <p class="eyebrow">${t("managerDashboard", "Manager dashboard")}</p>
+            <h1>${t("dashboardTitle", "Club roster and registrations")}</h1>
+            <p class="dashboard-intro">${t("dashboardIntro", "Review every registered manager, player, and member. Approve pending accounts, change roles, or suspend access.")}</p>
+          </header>
+          <div class="dashboard-state" data-dashboard-state>
+            <p class="dashboard-loading">${loadingMsg}</p>
+          </div>
+        </div>
+      </section>
+    `;
+
+    const state = root.querySelector("[data-dashboard-state]");
+    if (!state) return;
+
+    function renderSignedOut() {
+      state.innerHTML = `
+        <div class="dashboard-empty">
+          <p>${signInMsg}</p>
+          <button class="button" type="button" data-dashboard-login>${t("portalLoginTitle", "Log in")}</button>
+        </div>
+      `;
+      const loginBtn = state.querySelector("[data-dashboard-login]");
+      if (loginBtn) {
+        loginBtn.addEventListener("click", () => {
+          const launchBtn = headerRoot.querySelector("[data-auth-launch][data-auth-view='login']");
+          if (launchBtn instanceof HTMLElement) {
+            launchBtn.click();
+          }
+        });
+      }
+    }
+
+    function renderNotManager(role) {
+      state.innerHTML = `
+        <div class="dashboard-empty">
+          <p>${notAllowedMsg}</p>
+          <p class="dashboard-intro">${tf("dashboardYourRole", "Your current role: {role}", { role: role || t("roleMember", "Member") })}</p>
+        </div>
+      `;
+    }
+
+    function statusBadge(status) {
+      const value = String(status || "active").toLowerCase();
+      return `<span class="dashboard-badge is-${value}">${value}</span>`;
+    }
+
+    async function renderRoster() {
+      state.innerHTML = `<p class="dashboard-loading">${t("dashboardLoadingRoster", "Loading roster...")}</p>`;
+      const portal = window.allStarPortal;
+      try {
+        const snap = await portal.usersRef.orderBy("name").get();
+        const rows = [];
+        snap.forEach((doc) => rows.push(doc.data() || {}));
+        if (!rows.length) {
+          state.innerHTML = `<div class="dashboard-empty"><p>${t("dashboardEmpty", "No registered users yet.")}</p></div>`;
+          return;
+        }
+
+        const rowHtml = rows.map((member) => {
+          const uid = String(member.uid || "");
+          const name = String(member.name || "(no name)");
+          const email = String(member.email || "");
+          const role = String(member.role || "member").toLowerCase();
+          const status = String(member.status || "active").toLowerCase();
+          return `
+            <tr data-row="${uid}">
+              <td>
+                <strong>${name}</strong>
+                <div class="dashboard-email">${email}</div>
+              </td>
+              <td>
+                <select data-role-select data-uid="${uid}">
+                  <option value="manager" ${role === "manager" ? "selected" : ""}>${t("roleManager", "Manager")}</option>
+                  <option value="player"  ${role === "player"  ? "selected" : ""}>${t("rolePlayer",  "Player")}</option>
+                  <option value="member"  ${role === "member"  ? "selected" : ""}>${t("roleMember",  "Member")}</option>
+                </select>
+              </td>
+              <td>
+                <select data-status-select data-uid="${uid}">
+                  <option value="active"    ${status === "active"    ? "selected" : ""}>active</option>
+                  <option value="pending"   ${status === "pending"   ? "selected" : ""}>pending</option>
+                  <option value="suspended" ${status === "suspended" ? "selected" : ""}>suspended</option>
+                </select>
+              </td>
+              <td>${statusBadge(status)}</td>
+              <td>
+                <button class="button button-small" type="button" data-save data-uid="${uid}">${t("save", "Save")}</button>
+                <p class="form-status" data-row-status data-uid="${uid}" hidden></p>
+              </td>
+            </tr>
+          `;
+        }).join("");
+
+        state.innerHTML = `
+          <div class="dashboard-table-wrap">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>${t("dashboardColName", "Name / email")}</th>
+                  <th>${t("dashboardColRole", "Role")}</th>
+                  <th>${t("dashboardColStatus", "Status")}</th>
+                  <th>${t("dashboardColCurrent", "Current")}</th>
+                  <th>${t("save", "Save")}</th>
+                </tr>
+              </thead>
+              <tbody>${rowHtml}</tbody>
+            </table>
+          </div>
+        `;
+
+        state.querySelectorAll("[data-save]").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            const uid = btn.getAttribute("data-uid");
+            const roleSelect = state.querySelector(`[data-role-select][data-uid="${uid}"]`);
+            const statusSelect = state.querySelector(`[data-status-select][data-uid="${uid}"]`);
+            const rowStatus = state.querySelector(`[data-row-status][data-uid="${uid}"]`);
+            const newRole = roleSelect?.value || "member";
+            const newStatus = statusSelect?.value || "active";
+            btn.disabled = true;
+            try {
+              await portal.usersRef.doc(uid).set(
+                {
+                  role: newRole,
+                  status: newStatus,
+                  updatedAt: new Date().toISOString()
+                },
+                { merge: true }
+              );
+              if (rowStatus) {
+                rowStatus.textContent = t("dashboardSaved", "Saved.");
+                rowStatus.dataset.state = "success";
+                rowStatus.hidden = false;
+              }
+            } catch (error) {
+              if (rowStatus) {
+                rowStatus.textContent = tf("dashboardSaveFailed", "Save failed: {error}", { error: String(error?.code || error?.message || error) });
+                rowStatus.dataset.state = "error";
+                rowStatus.hidden = false;
+              }
+            } finally {
+              btn.disabled = false;
+            }
+          });
+        });
+      } catch (error) {
+        const code = String(error?.code || error?.message || error);
+        state.innerHTML = `
+          <div class="dashboard-empty">
+            <p>${tf("dashboardLoadFailed", "Could not load roster: {error}", { error: code })}</p>
+            <p class="dashboard-intro">${t("dashboardLoadFailedHint", "Check that Firestore rules from firebase/firestore.rules are published and that your account has role = manager.")}</p>
+          </div>
+        `;
+      }
+    }
+
+    function handleSession(session) {
+      if (!window.allStarPortal || !window.allStarPortal.auth) {
+        // Firebase config missing; nothing to do.
+        state.innerHTML = `<div class="dashboard-empty"><p>${t("portalBackendMissing", "Portal auth is not configured yet.")}</p></div>`;
+        return;
+      }
+      if (!session || !session.user) {
+        renderSignedOut();
+        return;
+      }
+      const profile = session.profile || {};
+      const role = String(profile.role || "").toLowerCase();
+      if (role !== "manager") {
+        renderNotManager(role);
+        return;
+      }
+      renderRoster();
+    }
+
+    if (window.allStarPortal?.onSessionChange) {
+      window.allStarPortal.onSessionChange(handleSession);
+    } else {
+      window.addEventListener("allstar:session", (event) => handleSession(event.detail));
+      // Also handle the case where portal hasn't loaded: show sign-in prompt after a moment.
+      setTimeout(() => {
+        if (!window.allStarPortal) {
+          state.innerHTML = `<div class="dashboard-empty"><p>${t("portalBackendMissing", "Portal auth is not configured yet.")}</p></div>`;
+        }
+      }, 1500);
+    }
+  }
+
   function setupInteractions() {
     setupScrollProgress();
     setupBackToTop();
@@ -3386,9 +3769,66 @@
     }
   }
 
+  function setupSessionChip() {
+    const chip = headerRoot.querySelector("[data-session-chip]");
+    const launchGroup = headerRoot.querySelector("[data-auth-launch-group]");
+    if (!chip) {
+      return;
+    }
+
+    function render(session) {
+      if (!session || !session.user) {
+        chip.hidden = true;
+        chip.innerHTML = "";
+        if (launchGroup) launchGroup.hidden = false;
+        return;
+      }
+      const profile = session.profile || {};
+      const displayName = String(profile.name || session.user.displayName || session.user.email || "").trim();
+      const roleRaw = String(profile.role || "").trim().toLowerCase();
+      const roleText = roleRaw ? roleRaw[0].toUpperCase() + roleRaw.slice(1) : t("roleMember", "Member");
+      const isManager = roleRaw === "manager";
+      const dashboardLink = isManager
+        ? `<a class="session-chip-link" href="${withLangParam("dashboard.html")}">${t("managerDashboard", "Manager dashboard")}</a>`
+        : "";
+
+      chip.hidden = false;
+      if (launchGroup) launchGroup.hidden = true;
+      chip.innerHTML = `
+        <span class="session-chip-avatar" aria-hidden="true">${(displayName[0] || "?").toUpperCase()}</span>
+        <span class="session-chip-meta">
+          <strong class="session-chip-name">${displayName}</strong>
+          <span class="session-chip-role">${roleText}</span>
+        </span>
+        ${dashboardLink}
+        <button class="session-chip-signout" type="button" data-session-signout>${t("signOut", "Sign out")}</button>
+      `;
+
+      const signOutBtn = chip.querySelector("[data-session-signout]");
+      if (signOutBtn) {
+        signOutBtn.addEventListener("click", async () => {
+          signOutBtn.disabled = true;
+          try {
+            await window.allStarPortal?.signOut?.();
+          } finally {
+            signOutBtn.disabled = false;
+          }
+        });
+      }
+    }
+
+    if (window.allStarPortal?.onSessionChange) {
+      window.allStarPortal.onSessionChange(render);
+    } else {
+      // Portal not ready yet; wait for the event
+      window.addEventListener("allstar:session", (event) => render(event.detail));
+    }
+  }
+
   renderHeader();
   setupLanguageSwitcher();
   setupPortalForms();
+  setupSessionChip();
   renderFooter();
 
   const pageRenderers = {
@@ -3397,7 +3837,8 @@
     teams: renderTeams,
     fixtures: renderFixtures,
     gallery: renderGallery,
-    contact: renderContact
+    contact: renderContact,
+    dashboard: renderDashboard
   };
 
   (pageRenderers[page] || renderHome)();
