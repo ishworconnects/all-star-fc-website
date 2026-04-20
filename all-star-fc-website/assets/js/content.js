@@ -94,21 +94,10 @@ window.clubContent = {
       preferredFoot: "Right",
       status: "Active Senior Squad",
       countryCode: "NP",
-      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-6.jpg"
-    },
-    {
-      name: "Sunny Shrestha",
-      group: "goalkeepers",
-      number: "13",
-      position: "Goalkeeper",
-      pathway: "Senior Team",
-      preferredFoot: "Right",
-      status: "Active Senior Squad",
-      countryCode: "NP",
       image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-1.jpg"
     },
     {
-      name: "Bichari Bhattarai",
+      name: "Nishan Bhattarai",
       group: "defenders",
       number: "02",
       position: "Defender",
@@ -116,7 +105,7 @@ window.clubContent = {
       preferredFoot: "Right",
       status: "Active Senior Squad",
       countryCode: "NP",
-      image: "assets/images/team-all-star.jpg"
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-2.jpg"
     },
     {
       name: "Bishal Bhandari",
@@ -130,7 +119,7 @@ window.clubContent = {
       image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-3.jpg"
     },
     {
-      name: "Amit Aryal",
+      name: "Deepesh Gautam",
       group: "defenders",
       number: "04",
       position: "Defender",
@@ -138,10 +127,10 @@ window.clubContent = {
       preferredFoot: "Right",
       status: "Active Senior Squad",
       countryCode: "NP",
-      image: "assets/images/tournaments/himalayan-cup/himalayan-cup-cover.jpg"
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-4.jpg"
     },
     {
-      name: "Rupendra Shiwakoti",
+      name: "Sashant Chauhan",
       group: "defenders",
       number: "05",
       position: "Defender",
@@ -149,13 +138,90 @@ window.clubContent = {
       preferredFoot: "Right",
       status: "Active Senior Squad",
       countryCode: "NP",
-      image: "assets/images/tournaments/gurka-cup-2026/gurka-cup-2026-cover.jpg"
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-5.jpg"
+    },
+    {
+      name: "Utsav Bhandari",
+      group: "defenders",
+      number: "06",
+      position: "Defender",
+      pathway: "Senior Team",
+      preferredFoot: "Right",
+      status: "Active Senior Squad",
+      countryCode: "NP",
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-6.jpg"
+    },
+    {
+      name: "Kailash Bhandari",
+      group: "defenders",
+      number: "07",
+      position: "Defender",
+      pathway: "Senior Team",
+      preferredFoot: "Left",
+      status: "Active Senior Squad",
+      countryCode: "NP",
+      image: "assets/images/tournaments/himalayan-cup/himalayan-cup-cover.jpg"
     },
     {
       name: "Shankar Bhattarai",
       group: "defenders",
-      number: "06",
+      number: "08",
       position: "Defender",
+      pathway: "Senior Team",
+      preferredFoot: "Left",
+      status: "Active Senior Squad",
+      countryCode: "NP",
+      image: "assets/images/tournaments/gurka-cup-2026/gurka-cup-2026-cover.jpg"
+    },
+    {
+      name: "Raul KC",
+      group: "defenders",
+      number: "09",
+      position: "Defender",
+      pathway: "Senior Team",
+      preferredFoot: "Right",
+      status: "Active Senior Squad",
+      countryCode: "NP",
+      image: "assets/images/team-all-star.jpg"
+    },
+    {
+      name: "Ashok Thapa Magar",
+      group: "midfielders",
+      number: "10",
+      position: "Midfielder",
+      pathway: "Senior Team",
+      preferredFoot: "Right",
+      status: "Active Senior Squad",
+      countryCode: "NP",
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-1.jpg"
+    },
+    {
+      name: "Nischal Gautam",
+      group: "midfielders",
+      number: "11",
+      position: "Midfielder",
+      pathway: "Senior Team",
+      preferredFoot: "Right",
+      status: "Active Senior Squad",
+      countryCode: "NP",
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-2.jpg"
+    },
+    {
+      name: "Nirjal Gautam",
+      group: "midfielders",
+      number: "12",
+      position: "Midfielder",
+      pathway: "Senior Team",
+      preferredFoot: "Right",
+      status: "Active Senior Squad",
+      countryCode: "NP",
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-3.jpg"
+    },
+    {
+      name: "Binay Timsina",
+      group: "midfielders",
+      number: "13",
+      position: "Midfielder",
       pathway: "Senior Team",
       preferredFoot: "Left",
       status: "Active Senior Squad",
@@ -163,9 +229,9 @@ window.clubContent = {
       image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-4.jpg"
     },
     {
-      name: "Deepesh Gautam",
+      name: "Ankit Bhandari",
       group: "midfielders",
-      number: "07",
+      number: "14",
       position: "Midfielder",
       pathway: "Senior Team",
       preferredFoot: "Right",
@@ -175,53 +241,9 @@ window.clubContent = {
     },
     {
       name: "Biplab Bhandari",
-      group: "midfielders",
-      number: "08",
-      position: "Midfielder",
-      pathway: "Senior Team",
-      preferredFoot: "Right",
-      status: "Active Senior Squad",
-      countryCode: "NP",
-      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-2.jpg"
-    },
-    {
-      name: "Raul KC",
-      group: "midfielders",
-      number: "09",
-      position: "Midfielder",
-      pathway: "Senior Team",
-      preferredFoot: "Right",
-      status: "Active Senior Squad",
-      countryCode: "NP",
-      image: "assets/images/team-all-star.jpg"
-    },
-    {
-      name: "Nishan Bhattarai",
-      group: "midfielders",
-      number: "10",
-      position: "Midfielder",
-      pathway: "Senior Team",
-      preferredFoot: "Left",
-      status: "Active Senior Squad",
-      countryCode: "NP",
-      image: "assets/images/tournaments/himalayan-cup/himalayan-cup-cover.jpg"
-    },
-    {
-      name: "Abhishek Bhandari",
-      group: "midfielders",
-      number: "11",
-      position: "Midfielder",
-      pathway: "Senior Team",
-      preferredFoot: "Right",
-      status: "Active Senior Squad",
-      countryCode: "NP",
-      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-1.jpg"
-    },
-    {
-      name: "Utsab Bhandari",
-      group: "midfielders",
-      number: "12",
-      position: "Midfielder",
+      group: "forwards",
+      number: "15",
+      position: "Forward",
       pathway: "Senior Team",
       preferredFoot: "Right",
       status: "Active Senior Squad",
@@ -229,9 +251,20 @@ window.clubContent = {
       image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-6.jpg"
     },
     {
+      name: "Bichari Bhattarai",
+      group: "forwards",
+      number: "16",
+      position: "Forward",
+      pathway: "Senior Team",
+      preferredFoot: "Right",
+      status: "Active Senior Squad",
+      countryCode: "NP",
+      image: "assets/images/team-all-star.jpg"
+    },
+    {
       name: "Arun Tharu",
       group: "forwards",
-      number: "14",
+      number: "17",
       position: "Forward",
       pathway: "Senior Team",
       preferredFoot: "Right",
@@ -240,40 +273,7 @@ window.clubContent = {
       image: "assets/images/tournaments/gurka-cup-2026/gurka-cup-2026-cover.jpg"
     },
     {
-      name: "Ankit Bhandari",
-      group: "forwards",
-      number: "15",
-      position: "Forward",
-      pathway: "Senior Team",
-      preferredFoot: "Right",
-      status: "Active Senior Squad",
-      countryCode: "NP",
-      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-3.jpg"
-    },
-    {
-      name: "Kailash Bhandari",
-      group: "forwards",
-      number: "16",
-      position: "Forward",
-      pathway: "Senior Team",
-      preferredFoot: "Left",
-      status: "Active Senior Squad",
-      countryCode: "NP",
-      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-5.jpg"
-    },
-    {
-      name: "Shiba Aryal",
-      group: "forwards",
-      number: "17",
-      position: "Forward",
-      pathway: "Senior Team",
-      preferredFoot: "Right",
-      status: "Active Senior Squad",
-      countryCode: "NP",
-      image: "assets/images/team-all-star.jpg"
-    },
-    {
-      name: "Samu Bhandari",
+      name: "Rupendra Shiwakoti",
       group: "forwards",
       number: "18",
       position: "Forward",
@@ -282,6 +282,50 @@ window.clubContent = {
       status: "Active Senior Squad",
       countryCode: "NP",
       image: "assets/images/tournaments/himalayan-cup/himalayan-cup-cover.jpg"
+    },
+    {
+      name: "Abhishek Bhandari",
+      group: "forwards",
+      number: "19",
+      position: "Forward",
+      pathway: "Senior Team",
+      preferredFoot: "Right",
+      status: "Active Senior Squad",
+      countryCode: "NP",
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-1.jpg"
+    },
+    {
+      name: "Sunny Shrestha",
+      group: "forwards",
+      number: "20",
+      position: "Forward",
+      pathway: "Senior Team",
+      preferredFoot: "Right",
+      status: "Active Senior Squad",
+      countryCode: "NP",
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-2.jpg"
+    },
+    {
+      name: "Amit Aryal",
+      group: "forwards",
+      number: "21",
+      position: "Forward",
+      pathway: "Senior Team",
+      preferredFoot: "Right",
+      status: "Active Senior Squad",
+      countryCode: "NP",
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-3.jpg"
+    },
+    {
+      name: "Samu Bhusal",
+      group: "forwards",
+      number: "22",
+      position: "Forward",
+      pathway: "Senior Team",
+      preferredFoot: "Right",
+      status: "Active Senior Squad",
+      countryCode: "NP",
+      image: "assets/images/tournaments/manse-nepal-cup-2024/manse-nepal-cup-2024-4.jpg"
     }
   ],
   board: [

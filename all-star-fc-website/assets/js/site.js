@@ -1639,18 +1639,14 @@
 
   function playerProfileCard(profile) {
     const group = normalizePlayerGroup(profile.group || profile.position);
-    const image = profile.image || tournamentFallback;
     const shirtNumber = profile.number || "--";
     const flag = countryFlagEmoji(profile.countryCode);
     const pathway = profile.pathway || profile.status || "";
     const flagLabel = profile.countryCode || "";
 
     return `
-      <article class="player-profile-card" data-player-card data-player-group="${group}">
-        <div class="player-card-media">
-          <img src="${image}" alt="${profile.name}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/images/tournament-placeholder.svg'">
-          <span class="player-card-number">${shirtNumber}</span>
-        </div>
+      <article class="player-profile-card player-profile-card--list" data-player-card data-player-group="${group}">
+        <span class="player-card-number" aria-label="Shirt number ${shirtNumber}">${shirtNumber}</span>
         <div class="player-card-body">
           <div class="player-card-topline">
             <span class="player-card-position">${profile.position}</span>

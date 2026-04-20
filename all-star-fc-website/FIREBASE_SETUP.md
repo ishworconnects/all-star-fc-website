@@ -84,7 +84,7 @@ firebase deploy --only hosting
 The `firebase.json` in this repo already points hosting at the project root.
 
 ### GitHub Pages
-Just push to the branch GitHub Pages serves from (probably `main` or `gh-pages`). The cache-busting query strings in the HTML files were bumped to `v=20260419a` so users will pull the new JS on first visit.
+Just push to the branch GitHub Pages serves from (probably `main` or `gh-pages`). The cache-busting query strings in the HTML files were bumped to `v=20260419c` so users will pull the new JS on first visit.
 
 ---
 
@@ -134,7 +134,7 @@ If A–E all pass, auth + registration + dashboard are working in production.
 | `auth/unauthorized-domain` | Add the current domain in Authentication → Settings → Authorized domains. |
 | `firestore/permission-denied` on signup | Rules from `firebase/firestore.rules` not published. Re-do step 2. |
 | Dashboard loads but says "Could not load roster: permission-denied" | Your account's `club_users` doc doesn't have `role: "manager"` and `status: "active"`. Fix it in Firestore Console. |
-| Header still shows old Log in / Register after login | Hard-refresh (Cmd/Ctrl+Shift+R) — the cached `site.js` is stale. The new `?v=20260419a` cache-buster prevents this on subsequent deploys. |
+| Header still shows old Log in / Register after login | Hard-refresh (Cmd/Ctrl+Shift+R) — the cached `site.js` is stale. The new `?v=20260419c` cache-buster prevents this on subsequent deploys. |
 
 ---
 
@@ -150,4 +150,4 @@ If A–E all pass, auth + registration + dashboard are working in production.
   - New `renderDashboard()` powers the manager roster page.
 - `assets/css/styles.css` — appended styles for the session chip and dashboard table.
 - `dashboard.html` — new manager-only page.
-- All HTML pages — bumped JS/CSS query strings to `v=20260419a` so the new code is fetched.
+- All HTML pages — bumped JS/CSS query strings to `v=20260419c` so the new code is fetched.
