@@ -929,10 +929,10 @@
   const navItems = [
     { key: "home", label: "Home", labelKey: "navHome", href: "index.html" },
     { key: "about", label: "About", labelKey: "navAbout", href: "about.html" },
-    { key: "executive", label: "Executive", labelKey: "navExecutive", href: "about.html#executive-panel" },
     { key: "teams", label: "Teams & Academy", labelKey: "navTeams", href: "teams.html" },
     { key: "fixtures", label: "Tournaments", labelKey: "navFixtures", href: "fixtures.html" },
     { key: "gallery", label: "Gallery", labelKey: "navGallery", href: "gallery.html" },
+    { key: "sponsors", label: "Sponsors", labelKey: "navSponsors", href: "sponsors.html" },
     { key: "contact", label: "Contact / Join", labelKey: "navContact", href: "contact.html" }
   ];
   const utilityLinks = [
@@ -1430,6 +1430,8 @@
   }
 
   function renderFooter() {
+    const year = new Date().getFullYear();
+    const mapHref = (localized.contact && localized.contact.mapLink) || "";
     footerRoot.innerHTML = `
       <section class="footer-cta">
         <div class="section-shell footer-cta-shell">
@@ -1441,22 +1443,45 @@
         </div>
       </section>
       <div class="site-footer-inner section-shell">
-        <div class="footer-brand">
+        <div class="footer-col footer-brand">
           <img src="${localized.clubMeta.badge}" alt="${localized.clubMeta.shortName} badge">
           <div>
             <strong>${localized.clubMeta.name}</strong>
             <p>${localized.clubMeta.tagline}</p>
           </div>
         </div>
-        <div class="footer-meta">
-          <p>${localized.contact.addressLines.join(", ")}</p>
-          <p><a href="mailto:${localized.contact.email}">${localized.contact.email}</a></p>
+        <div class="footer-col">
+          <p class="footer-col-title">${t("footerExploreTitle", "Explore")}</p>
+          <ul class="footer-link-list">
+            <li><a href="${withLangParam("about.html")}">${t("navAbout", "About")}</a></li>
+            <li><a href="${withLangParam("teams.html")}">${t("navTeams", "Teams & Academy")}</a></li>
+            <li><a href="${withLangParam("fixtures.html")}">${t("navFixtures", "Tournaments")}</a></li>
+            <li><a href="${withLangParam("gallery.html")}">${t("navGallery", "Gallery")}</a></li>
+            <li><a href="${withLangParam("sponsors.html")}">${t("navSponsors", "Sponsors")}</a></li>
+            <li><a href="${withLangParam("contact.html")}">${t("navContact", "Contact / Join")}</a></li>
+          </ul>
         </div>
-        <div class="social-list">
-          ${localized.clubMeta.socialLinks.map((social) => `
-            <a href="${social.href}" target="_blank" rel="noreferrer">${social.label}</a>
-          `).join("")}
+        <div class="footer-col">
+          <p class="footer-col-title">${t("footerContactTitle", "Contact")}</p>
+          <p class="footer-meta">${localized.contact.addressLines.join(", ")}</p>
+          ${mapHref ? `<p class="footer-meta"><a href="${mapHref}" target="_blank" rel="noreferrer">${t("openMap", "Open in Google Maps")}</a></p>` : ""}
+          <p class="footer-meta"><a href="mailto:${localized.contact.email}">${localized.contact.email}</a></p>
         </div>
+        <div class="footer-col">
+          <p class="footer-col-title">${t("footerFollowTitle", "Follow")}</p>
+          <div class="footer-social-row" aria-label="${t("clubSocialLinks", "Club social links")}">
+            ${localized.clubMeta.socialLinks.map((social) => `
+              <a class="footer-social-link" href="${social.href}" target="_blank" rel="noreferrer" aria-label="${social.label}">
+                ${socialIcon(social.label)}
+                <span class="sr-only">${social.label}</span>
+              </a>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+      <div class="footer-legal section-shell">
+        <p>&copy; ${year} ${localized.clubMeta.name}. ${t("footerRightsReserved", "All rights reserved.")}</p>
+        <p>${t("footerBuiltWith", "Built in Helsinki with football, family, and community at the centre.")}</p>
       </div>
       <button class="back-to-top" type="button" data-back-to-top aria-label="${t("backToTop", "Back to top")}">${t("topButton", "Top")}</button>
     `;
@@ -3200,6 +3225,109 @@
     `;
   }
 
+  function trainingScheduleSection() {
+    const schedule = localized.trainingSchedule;
+    if (!schedule || !Array.isArray(schedule.sessions) || !schedule.sessions.length) {
+      return "";
+    }
+    return `
+      <section class="content-section">
+        <div class="section-shell">
+          ${sectionHeading(t("trainingScheduleEyebrow", "Training week"), schedule.headline || t("trainingScheduleTitle", "Weekly training schedule"), schedule.copy || "")}
+          <div class="schedule-grid">
+            ${schedule.sessions.map((session) => `
+              <article class="schedule-card">
+                <p class="schedule-day">${session.day}</p>
+                <p class="schedule-time">${session.time}</p>
+                <p class="schedule-group">${session.group}</p>
+                <p class="schedule-focus">${session.focus}</p>
+              </article>
+            `).join("")}
+          </div>
+          ${schedule.venue ? `
+            <p class="schedule-venue">
+              <strong>${t("venueLabel", "Venue")}:</strong>
+              ${schedule.venueLink
+                ? `<a href="${schedule.venueLink}" target="_blank" rel="noreferrer">${schedule.venue}</a>`
+                : schedule.venue}
+            </p>` : ""}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderSponsors() {
+    const sponsorsList = localized.sponsors || [];
+    const tiers = localized.sponsorTiers || [];
+    const cta = localized.sponsorCta || {};
+    const tieredSponsors = (tier) => sponsorsList.filter((s) => String(s.tier || "").toLowerCase().includes(String(tier.label || "").toLowerCase().split(" ")[0]));
+
+    root.innerHTML = `
+      <section class="page-hero sponsors-hero">
+        <div class="section-shell">
+          <p class="eyebrow">${t("sponsorsHeroEyebrow", "Sponsors and partners")}</p>
+          <h1>${t("sponsorsHeroTitle", "Backed by the Helsinki Nepalese community.")}</h1>
+          <p>${t("sponsorsHeroCopy", "Our sponsors fund kit, tournament travel, training equipment, and the academy pathway. Without them there is no All Star FC.")}</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <div class="section-shell">
+          ${sectionHeading(t("currentSponsorsEyebrow", "Current sponsors"), t("currentSponsorsTitle", "Partners standing with All Star FC right now."), "")}
+          <div class="card-grid sponsors-grid sponsors-grid-detailed">
+            ${sponsorsList.map((sponsor) => `
+              <article class="sponsor-detail-card">
+                <div class="sponsor-detail-logo">
+                  <img src="${sponsor.logo || sponsorFallback}" alt="${sponsor.name}" loading="lazy">
+                </div>
+                <p class="eyebrow">${sponsor.tier}</p>
+                <h3>${sponsor.name}</h3>
+                ${sponsor.summary ? `<p>${sponsor.summary}</p>` : ""}
+                ${sponsor.link ? `<a class="text-link" href="${sponsor.link}" target="_blank" rel="noreferrer">${tf("visitSponsor", `Visit ${sponsor.name}`, { name: sponsor.name })}</a>` : ""}
+              </article>
+            `).join("")}
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section tint-section">
+        <div class="section-shell">
+          ${sectionHeading(t("sponsorTiersEyebrow", "Sponsorship tiers"), t("sponsorTiersTitle", "Three ways to back the club."), t("sponsorTiersCopy", "Pick the tier that fits your business or community group. Each tier delivers visibility tied to club performance."))}
+          <div class="card-grid three-up tier-grid">
+            ${tiers.map((tier) => `
+              <article class="info-card tier-card tier-${tier.key}">
+                <p class="eyebrow">${tier.label}</p>
+                <h3>${tier.headline}</h3>
+                <p>${tier.copy}</p>
+                ${Array.isArray(tier.benefits) ? `
+                  <ul class="tier-benefits">
+                    ${tier.benefits.map((b) => `<li>${b}</li>`).join("")}
+                  </ul>` : ""}
+              </article>
+            `).join("")}
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <div class="section-shell">
+          <article class="sponsor-cta-card">
+            <p class="eyebrow">${t("sponsorCtaEyebrow", "Become a partner")}</p>
+            <h2>${cta.headline || t("sponsorCtaHeadline", "Become an All Star FC partner")}</h2>
+            <p>${cta.copy || t("sponsorCtaCopy", "Reach the Nepalese community in Helsinki and back a club built on discipline, unity, and football excellence.")}</p>
+            <div class="button-row">
+              ${cta.primary ? `<a class="button" href="${cta.primary.href}">${cta.primary.label}</a>` : ""}
+              ${cta.secondary ? `<a class="button button-secondary" href="${withLangParam(cta.secondary.href)}">${cta.secondary.label}</a>` : ""}
+            </div>
+          </article>
+        </div>
+      </section>
+    `;
+
+    // satisfy unused-var linters in case `tieredSponsors` is removed later
+    void tieredSponsors;
+  }
+
   function renderFixtures() {
     const futureSlots = localized.futureTournamentGallery || [];
 
@@ -3242,6 +3370,8 @@
           </div>
         </div>
       </section>
+
+      ${trainingScheduleSection()}
 
       <section class="content-section tint-section">
         <div class="section-shell">
@@ -3833,6 +3963,7 @@
     teams: renderTeams,
     fixtures: renderFixtures,
     gallery: renderGallery,
+    sponsors: renderSponsors,
     contact: renderContact,
     dashboard: renderDashboard
   };

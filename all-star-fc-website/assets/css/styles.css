@@ -3866,3 +3866,272 @@ body.lightbox-open {
   .folder-view-header { flex-direction: column; align-items: stretch; }
   .folder-close-button { align-self: flex-start; }
 }
+
+/* ===========================================================================
+   Sponsors page + sponsor cards
+   =========================================================================== */
+
+.sponsors-hero {
+  background: linear-gradient(135deg, #0f4e2c 0%, #1c7844 60%, #2da966 100%);
+  color: #ffffff;
+}
+.sponsors-hero .eyebrow,
+.sponsors-hero h1,
+.sponsors-hero p { color: #ffffff; }
+.sponsors-hero .eyebrow { color: rgba(255, 255, 255, 0.85); }
+.sponsors-hero p { color: rgba(255, 255, 255, 0.9); max-width: 64ch; }
+
+.sponsors-grid-detailed {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.sponsor-detail-card {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1.2rem 1.1rem 1.4rem;
+  background: #ffffff;
+  border: 1px solid rgba(18, 67, 41, 0.14);
+  border-radius: 14px;
+  box-shadow: 0 14px 30px rgba(7, 34, 22, 0.10);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.sponsor-detail-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 40px rgba(7, 34, 22, 0.16);
+}
+.sponsor-detail-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 110px;
+  background: linear-gradient(180deg, #f4faf6 0%, #e3f3ea 100%);
+  border-radius: 10px;
+  padding: 0.6rem;
+}
+.sponsor-detail-logo img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+.sponsor-detail-card h3 {
+  margin: 0;
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: 1.45rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #0f3c27;
+}
+.sponsor-detail-card p {
+  margin: 0;
+  color: #365648;
+  line-height: 1.5;
+}
+
+/* Sponsorship tier cards */
+.tier-grid { gap: 1.1rem; }
+.tier-card {
+  display: grid;
+  gap: 0.55rem;
+  padding: 1.25rem 1.1rem 1.4rem;
+  border-radius: 14px;
+  border-top: 4px solid #1c7844;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.tier-card:hover { transform: translateY(-3px); box-shadow: 0 22px 40px rgba(7, 34, 22, 0.14); }
+.tier-card.tier-main { border-top-color: #c69b2a; background: linear-gradient(180deg, #fffaef 0%, #ffffff 65%); }
+.tier-card.tier-secondary { border-top-color: #1c7844; }
+.tier-card.tier-community { border-top-color: #4f87a4; background: linear-gradient(180deg, #f3f9fc 0%, #ffffff 65%); }
+.tier-benefits {
+  margin: 0.4rem 0 0;
+  padding-left: 1.05rem;
+  display: grid;
+  gap: 0.32rem;
+  color: #365648;
+}
+.tier-benefits li { line-height: 1.45; }
+
+/* Become-a-partner CTA card */
+.sponsor-cta-card {
+  display: grid;
+  gap: 0.7rem;
+  padding: 2rem 1.6rem;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #102a1c 0%, #1c7844 100%);
+  color: #ffffff;
+  text-align: center;
+  align-items: center;
+  justify-items: center;
+  box-shadow: 0 26px 50px rgba(7, 34, 22, 0.22);
+}
+.sponsor-cta-card .eyebrow,
+.sponsor-cta-card h2,
+.sponsor-cta-card p { color: #ffffff; margin: 0; }
+.sponsor-cta-card .eyebrow { color: rgba(255, 255, 255, 0.85); }
+.sponsor-cta-card h2 {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: clamp(1.5rem, 1.4vw + 1.1rem, 2.1rem);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.sponsor-cta-card p { max-width: 60ch; color: rgba(255, 255, 255, 0.92); line-height: 1.55; }
+.sponsor-cta-card .button { background: #ffffff; color: #0f3c27; }
+.sponsor-cta-card .button:hover { background: #f7fff9; transform: translateY(-2px); }
+.sponsor-cta-card .button-secondary { background: transparent; color: #ffffff; border: 1.5px solid rgba(255, 255, 255, 0.7); }
+.sponsor-cta-card .button-secondary:hover { background: rgba(255, 255, 255, 0.1); }
+
+/* ===========================================================================
+   Training schedule grid
+   =========================================================================== */
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.95rem;
+}
+.schedule-card {
+  display: grid;
+  gap: 0.32rem;
+  padding: 1.1rem 1rem;
+  background: #ffffff;
+  border: 1px solid rgba(18, 67, 41, 0.12);
+  border-left: 4px solid #1c7844;
+  border-radius: 10px;
+  box-shadow: 0 10px 22px rgba(7, 34, 22, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.schedule-card:hover { transform: translateY(-3px); box-shadow: 0 18px 32px rgba(7, 34, 22, 0.14); }
+.schedule-day {
+  margin: 0;
+  color: #1c7844;
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: 1.25rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.schedule-time {
+  margin: 0;
+  color: #0f3c27;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.schedule-group {
+  margin: 0;
+  color: #4a6a59;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+.schedule-focus {
+  margin: 0.15rem 0 0;
+  color: #5b7567;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+.schedule-venue {
+  margin: 1rem 0 0;
+  color: #365648;
+}
+.schedule-venue a { color: #1c7844; font-weight: 700; }
+.schedule-venue a:hover { color: #0f4e2c; text-decoration: underline; }
+
+@media (max-width: 980px) {
+  .sponsors-grid-detailed,
+  .schedule-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 580px) {
+  .sponsors-grid-detailed,
+  .schedule-grid { grid-template-columns: 1fr; }
+  .sponsor-cta-card { padding: 1.4rem 1.05rem; }
+}
+
+/* ===========================================================================
+   Global polish: buttons + hero + cards
+   =========================================================================== */
+
+.button {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(7, 34, 22, 0.18);
+}
+
+.info-card {
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.info-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 36px rgba(7, 34, 22, 0.14);
+}
+
+/* ===========================================================================
+   Richer footer (4-column + legal strip)
+   =========================================================================== */
+
+.site-footer-inner {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1.2fr 1fr;
+  gap: 1.6rem;
+  padding: 2.2rem 0 1.4rem;
+}
+.footer-col { display: grid; gap: 0.5rem; align-content: start; }
+.footer-col-title {
+  margin: 0 0 0.2rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.footer-link-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.32rem;
+}
+.footer-link-list a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.18s ease;
+}
+.footer-link-list a:hover { color: #ffffff; text-decoration: underline; }
+.footer-meta { margin: 0; color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; }
+.footer-meta a { color: rgba(255, 255, 255, 0.95); }
+.footer-meta a:hover { color: #ffffff; text-decoration: underline; }
+
+.footer-social-row { display: flex; gap: 0.55rem; flex-wrap: wrap; align-items: center; }
+.footer-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.footer-social-link:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
+.footer-social-link svg { width: 18px; height: 18px; }
+
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.2rem;
+  justify-content: space-between;
+  padding: 1rem 0 1.2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.86rem;
+}
+.footer-legal p { margin: 0; }
+
+@media (max-width: 980px) {
+  .site-footer-inner { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .site-footer-inner { grid-template-columns: 1fr; }
+  .footer-legal { justify-content: flex-start; }
+}
+

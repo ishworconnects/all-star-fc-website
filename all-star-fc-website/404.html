@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0f4e2c">
+  <title>Page not found | All Star FC</title>
+  <link rel="icon" type="image/png" href="assets/images/club-logo.png">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260421a">
+  <style>
+    .nf-shell {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.2rem;
+      background: linear-gradient(135deg, #0f4e2c 0%, #1c7844 70%, #2da966 100%);
+      color: #ffffff;
+    }
+    .nf-card {
+      max-width: 540px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(8px);
+      border-radius: 18px;
+      padding: 2.4rem 1.8rem;
+    }
+    .nf-card img { width: 76px; height: 76px; margin-bottom: 1rem; }
+    .nf-card h1 {
+      font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+      font-size: clamp(2.2rem, 4vw + 1rem, 3.6rem);
+      letter-spacing: 0.02em;
+      margin: 0 0 0.4rem;
+      text-transform: uppercase;
+    }
+    .nf-card p { margin: 0 0 1.4rem; color: rgba(255, 255, 255, 0.92); line-height: 1.55; }
+    .nf-actions { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+    .nf-btn {
+      display: inline-block;
+      padding: 0.7rem 1.2rem;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #0f3c27;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.18s ease;
+    }
+    .nf-btn:hover { transform: translateY(-2px); }
+    .nf-btn.secondary { background: transparent; color: #ffffff; border: 1.5px solid rgba(255, 255, 255, 0.7); }
+    .nf-btn.secondary:hover { background: rgba(255, 255, 255, 0.12); }
+  </style>
+</head>
+<body>
+  <main class="nf-shell">
+    <article class="nf-card">
+      <img src="assets/images/club-logo.png" alt="All Star FC badge">
+      <h1>404 — Off the pitch</h1>
+      <p>That page doesn't exist (yet). Head back to the homepage or jump straight to a section below.</p>
+      <div class="nf-actions">
+        <a class="nf-btn" href="/index.html">Go home</a>
+        <a class="nf-btn secondary" href="/teams.html">View squad</a>
+        <a class="nf-btn secondary" href="/contact.html">Contact club</a>
+      </div>
+    </article>
+  </main>
+</body>
+</html>

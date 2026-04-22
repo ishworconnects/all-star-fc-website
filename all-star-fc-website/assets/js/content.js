@@ -593,10 +593,83 @@ window.clubContent = {
     }
   ],
   sponsors: [
-    { name: "Mount Everest Ravintola", tier: "Main Sponsor", link: "https://dev.everestnokka.fi/en/home/", logo: "assets/images/sponsor-mount-everest.png" },
-    { name: "Ravintola Nepal Palace", tier: "Secondary Sponsor", link: "https://nepalpalace.fi/en/frontpage/", logo: "assets/images/sponsor-nepal-palace.png" },
-    { name: "Ravintola Annapurna", tier: "Secondary Sponsor", link: "https://www.annapurna.fi/", logo: "assets/images/sponsor-annapurna.png" }
+    {
+      name: "Mount Everest Ravintola",
+      tier: "Main Sponsor",
+      link: "https://dev.everestnokka.fi/en/home/",
+      logo: "assets/images/sponsor-mount-everest.png",
+      summary: "Authentic Himalayan dining in Helsinki. Mount Everest Ravintola backs All Star FC as principal partner across the 2025-2026 season."
+    },
+    {
+      name: "Ravintola Nepal Palace",
+      tier: "Secondary Sponsor",
+      link: "https://nepalpalace.fi/en/frontpage/",
+      logo: "assets/images/sponsor-nepal-palace.png",
+      summary: "A long-standing Nepalese restaurant in Helsinki supporting club kit, equipment, and post-match team meals."
+    },
+    {
+      name: "Ravintola Annapurna",
+      tier: "Secondary Sponsor",
+      link: "https://www.annapurna.fi/",
+      logo: "assets/images/sponsor-annapurna.png",
+      summary: "Hospitality partner backing club hospitality nights and tournament travel for All Star FC squads."
+    }
   ],
+  sponsorTiers: [
+    {
+      key: "main",
+      label: "Main Sponsor",
+      headline: "Headline partner of All Star FC",
+      copy: "Brand featured on the front of the senior matchday shirt, training kit, all tournament communications, and across the website hero.",
+      benefits: [
+        "Front-of-shirt logo placement on the senior team",
+        "Hero placement on every page of allstarfc.fi",
+        "Match-day announcements + social media credit",
+        "Branded co-presence at tournaments All Star FC enters"
+      ]
+    },
+    {
+      key: "secondary",
+      label: "Secondary Sponsor",
+      headline: "Pitch-side partner",
+      copy: "Logo placement on the back of training tops, dedicated sponsor card on the website, and acknowledgment at every tournament.",
+      benefits: [
+        "Back-of-shirt or sleeve logo placement",
+        "Dedicated sponsor card on the homepage and sponsors page",
+        "Social media tagging on tournament posts",
+        "Invitation to the annual club gathering"
+      ]
+    },
+    {
+      key: "community",
+      label: "Community Partner",
+      headline: "Community + matchday support",
+      copy: "Local Helsinki businesses, families, and community members supporting kit, transport, hospitality, and academy growth.",
+      benefits: [
+        "Listed on the sponsors page community partner wall",
+        "Acknowledged in season-end thank-you posts",
+        "Priority booking for hospitality at home tournaments"
+      ]
+    }
+  ],
+  sponsorCta: {
+    headline: "Become an All Star FC partner",
+    copy: "Reach the Nepalese community in Helsinki and support a club built on discipline, unity, and football excellence. We tailor every sponsorship to your business goals.",
+    primary: { label: "Email the club", href: "mailto:allstarfc.helsinki@gmail.com?subject=Sponsorship%20enquiry" },
+    secondary: { label: "Open contact form", href: "contact.html" }
+  },
+  trainingSchedule: {
+    headline: "Weekly training schedule",
+    copy: "Senior team and academy sessions at Talin Liikuntapuisto, Helsinki. Times shift slightly with the Finnish football calendar — confirm via WhatsApp or email before travelling.",
+    venue: "Talin Liikuntapuisto, Helsinki",
+    venueLink: "https://maps.google.com/?q=Talin+Liikuntapuisto+Helsinki",
+    sessions: [
+      { day: "Tuesday", time: "19:00 – 20:30", group: "Senior Team", focus: "Tactical + small-sided games" },
+      { day: "Thursday", time: "19:00 – 20:30", group: "Senior Team", focus: "Match preparation + set pieces" },
+      { day: "Saturday", time: "10:00 – 11:30", group: "Academy U8–U13", focus: "Technical development + game play" },
+      { day: "Sunday", time: "Match days", group: "All squads", focus: "Tournament fixtures (see Tournaments page)" }
+    ]
+  },
   contact: {
     email: "allstarfc.helsinki@gmail.com",
     phone: "",
