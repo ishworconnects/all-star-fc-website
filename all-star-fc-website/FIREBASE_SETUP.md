@@ -125,7 +125,43 @@ If A–E all pass, auth + registration + dashboard are working in production.
 
 ---
 
-## 6. Common errors & where to look
+## 6. Email notifications on new registrations + contact form
+
+The site already wires up two no-server notification flows via [formsubmit.co](https://formsubmit.co):
+
+1. **Contact form** (`contact.html`) — every submission emails the club inbox with `ishwor.kunwor93@gmail.com` on CC.
+2. **New player/coach/manager registration** (`Register` button in the header) — every successful signup emails the club inbox with `ishwor.kunwor93@gmail.com` on CC, including name, email, role, status, and the page where the registration happened.
+
+There's nothing to install — formsubmit.co works on the first POST. The very first email after deploy will arrive with a "Confirm your email address" link from formsubmit. Click it once for **`allstarfc.helsinki@gmail.com`** and once more if formsubmit asks to verify the CC address. After that, every subsequent registration triggers an email automatically with no extra clicks.
+
+If you ever want to switch the notification destination, edit `notifyClubRegistration()` in `assets/js/site.js` (the `recipient` and `ccRecipient` constants) and the formsubmit call inside the contact form's `submit` handler.
+
+---
+
+## 7. Visit tracking with Google Analytics for Firebase
+
+The site loads `firebase-analytics-compat.js` on every public page (`index`, `about`, `teams`, `fixtures`, `gallery`, `sponsors`, `contact`). The `dashboard.html` page is intentionally excluded — it's `noindex,nofollow` and only managers see it.
+
+Analytics stays **off** until you paste a Measurement ID into `assets/js/firebase-config.js`. To turn it on:
+
+1. Open the [Firebase Console](https://console.firebase.google.com/) → project `all-star-fc-website`.
+2. Click the **gear icon → Project settings → General** tab.
+3. Scroll to **Your apps → Web app** for `all-star-fc-website`.
+4. If you don't see a `measurementId` line, click **Set up Google Analytics** (top of the Project settings page) and accept the defaults. Firebase will create a Google Analytics property and link it.
+5. Copy the value that looks like `G-XXXXXXXXXX`.
+6. Open `assets/js/firebase-config.js` and replace the empty string on the `measurementId:` line with your value:
+   ```js
+   measurementId: "G-XXXXXXXXXX",
+   ```
+7. Bump the cache-buster in every HTML file (e.g. `?v=20260421b` → `?v=20260421c`) so visitors pull the new config, then redeploy.
+
+Once that's live, open Firebase Console → **Analytics → Realtime**. The first visitor to `https://all-star-fc-website.web.app/` will appear within ~30 seconds. Daily reports show up under Analytics → Dashboard after roughly 24 hours of traffic.
+
+You will **not** get an email per visit — Analytics is aggregated stats only. If you want a per-visit email too, that needs a paid Cloud Function or a third-party service. The combination of "Analytics for traffic stats + formsubmit for registrations + the existing contact form email" is the lightest setup that covers everything without extra cost.
+
+---
+
+## 8. Common errors & where to look
 
 | Symptom in browser | Likely fix |
 |---|---|

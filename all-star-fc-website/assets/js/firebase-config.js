@@ -8,6 +8,10 @@ window.allStarFirebaseConfig = (() => {
     appId: "1:298980650484:web:5c06f7406a674eb775dda1",
     storageBucket: "all-star-fc-website.firebasestorage.app",
     messagingSenderId: "298980650484",
+    // Paste your Google Analytics Measurement ID here once you enable Analytics
+    // in Firebase Console -> Project settings -> Your apps -> Web app.
+    // It looks like "G-XXXXXXXXXX". Leave as "" to keep Analytics disabled.
+    measurementId: "",
     profileCollection: "club_users",
     managerAllowlist: [
       "allstarfc.helsinki@gmail.com",

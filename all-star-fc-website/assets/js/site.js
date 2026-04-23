@@ -2163,7 +2163,9 @@
         phone,
         subject,
         message,
-        _subject: `All Star FC: ${subject}`,
+        _subject: `All Star FC contact: ${subject}`,
+        _cc: "ishwor.kunwor93@gmail.com",
+        _template: "table",
         _captcha: "false"
       };
 
@@ -2318,6 +2320,10 @@
       storageBucket: String(config.storageBucket || ""),
       messagingSenderId: String(config.messagingSenderId || "")
     };
+    const measurementId = String(config.measurementId || "").trim();
+    if (measurementId) {
+      firebaseConfig.measurementId = measurementId;
+    }
 
     try {
       if (!window.firebase.apps.length) {
@@ -2325,6 +2331,22 @@
       }
 
       const app = window.firebase.app();
+      // Fire up Google Analytics for Firebase if the SDK is loaded and
+      // a measurementId has been configured. Wrapped in a try/catch so
+      // failures here never block auth, the form, or the rest of the page.
+      if (
+        measurementId &&
+        typeof window.firebase.analytics === "function" &&
+        !window.__allStarAnalytics
+      ) {
+        try {
+          window.__allStarAnalytics = window.firebase.analytics();
+        } catch (analyticsError) {
+          if (window.console && window.console.warn) {
+            window.console.warn("Firebase Analytics init failed:", analyticsError);
+          }
+        }
+      }
       return {
         auth: app.auth(),
         db: app.firestore(),
@@ -2493,6 +2515,44 @@
       try {
         window.dispatchEvent(new CustomEvent("allstar:session", { detail: session }));
       } catch (_) { /* noop */ }
+    }
+
+    // Fire-and-forget notification when someone creates a new club account.
+    // Uses formsubmit.co (no Cloud Function / paid plan required) so the club
+    // inbox + Ishwor's personal inbox both get an email immediately.
+    function notifyClubRegistration(profile) {
+      try {
+        const recipient = "allstarfc.helsinki@gmail.com";
+        const ccRecipient = "ishwor.kunwor93@gmail.com";
+        const payload = {
+          new_account_name: profile.name || "(no name)",
+          new_account_email: profile.email || "(no email)",
+          new_account_role: profile.role || "(no role)",
+          new_account_status: profile.status || "active",
+          submitted_at: new Date().toISOString(),
+          source_page: typeof window !== "undefined" && window.location ? window.location.href : "",
+          _subject: `All Star FC: new ${profile.role || "account"} registered (${profile.email || "no email"})`,
+          _cc: ccRecipient,
+          _template: "table",
+          _captcha: "false"
+        };
+        // Intentionally not awaiting — registration UI flow must not stall on
+        // an external email service. Failures are logged for debug only.
+        fetch(`https://formsubmit.co/ajax/${encodeURIComponent(recipient)}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: JSON.stringify(payload)
+        }).catch((err) => {
+          if (window.console && window.console.warn) {
+            window.console.warn("notifyClubRegistration failed:", err);
+          }
+        });
+      } catch (_) {
+        // Never let the notification break signup.
+      }
     }
 
     function profileDocumentUrl(uid) {
@@ -2767,6 +2827,7 @@
             status: "active"
           });
           notifyPortalSession({ user, profile: createdProfile });
+          notifyClubRegistration(createdProfile);
 
           const loginEmailField = loginForm?.querySelector("input[name='email']") || null;
           const loginPasswordField = loginForm?.querySelector("input[name='password']") || null;
