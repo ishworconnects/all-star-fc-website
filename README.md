@@ -23,7 +23,7 @@ This repository contains a multi-page club website built with HTML, CSS, and Jav
 - Firebase Hosting
 - Firebase Authentication
 - Cloud Firestore
-- Firebase Analytics
+- Firebase Analytics..
 
 ## Project Structure
 
