@@ -1,6 +1,6 @@
 # All Star FC Website
 
-Official website for All Star FC, a Helsinki-based Nepalese football club founded in 2010. The site presents the club's identity, teams, fixtures, sponsors, gallery, and contact information through a responsive static web experience.
+Official website for All Star FC, a Helsinki-based Nepalese football club founded in 2010. The site presents the club's identity , teams, fixtures, sponsors, gallery, and contact information through a responsive static web experience.
 
 ## Project Overview
 
