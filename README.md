@@ -11,8 +11,8 @@ This repository contains a multi-page club website built with HTML, CSS, and Jav
 - Responsive public pages for home, about, teams, fixtures, gallery, sponsors, and contact
 - Shared header, footer, and page rendering through JavaScript
 - Multilingual content support for English, Finnish, and Nepali labels
-- Firebase Hosting configuration with clean URLs, caching headers, and security headers
-- Firebase setup documentation for deployment and project configuration
+- Firebase Hosting configuration with clean URLs, cahche headers, and security headers
+- Firebase setup documentation for deployment and project configuration and runtime
 - SEO assets including `robots.txt`, `sitemap.xml`, Open Graph metadata, and social preview tags
 
 ## Tech Stack
