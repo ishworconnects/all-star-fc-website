@@ -62,8 +62,8 @@ http://localhost:8080
 
 ## Deployment
 
-The site is configured for Firebase Hosting. See `all-star-fc-website/FIREBASE_SETUP.md` and `all-star-fc-website/PUSH_AND_DEPLOY.md` for setup and deployment steps.
+The site is configured for Firebase Hosting . See `all-star-fc-website/FIREBASE_SETUP.md` and `all-star-fc-website/PUSH_AND_DEPLOY.md` for setup and deployment  steps.
 
 ## Status
 
-Active club website project. Future improvements may include expanded admin tools, richer media management, and additional fixture or sponsor workflows.
+Active club website project. Future improvements may include expanded admin tools, richer media management, and additional fixture or sponsor  workflows.
